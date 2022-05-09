@@ -1,7 +1,12 @@
 package com.itheima.stock.mapper;
 
+import com.itheima.stock.common.domain.StockBlockDomain;
 import com.itheima.stock.pojo.StockBlockRtInfo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author Renhanlu
@@ -24,4 +29,6 @@ public interface StockBlockRtInfoMapper {
 
     int updateByPrimaryKey(StockBlockRtInfo record);
 
+
+    List<StockBlockDomain> getAllMarketBytime (@Param("datePoint") Date datePoint);
 }

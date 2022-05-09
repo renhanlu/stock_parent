@@ -25,5 +25,5 @@ public class LoginReqVo {
     /**
      * 存入redis的随机码
      */
-//    private String rkey;
+    private String rkey;
 }

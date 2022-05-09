@@ -28,6 +28,24 @@
         from stock_block_rt_info
         where  id = #{id,jdbcType=VARCHAR} 
     </select>
+    <select id="getAllMarketBytime" resultType="com.itheima.stock.common.domain.StockBlockDomain">
+        SELECT
+            sbi.company_num AS companyNum,
+            sbi.trade_amount AS tardeAmt,
+            sbi.label AS code,
+            sbi.avg_price AS avgPrice,
+            sbi.block_name AS NAME,
+            DATE_FORMAT(sbi.cur_time,'%Y%m%d') AS curDate,
+            sbi.trade_volume AS tradeVol,
+            sbi.updown_rate AS updownRate
+        FROM
+            stock_block_rt_info AS sbi
+        WHERE sbi.cur_time=#{datePoint}
+        ORDER BY
+            sbi.trade_volume DESC
+        LIMIT 10;
+
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_block_rt_info
