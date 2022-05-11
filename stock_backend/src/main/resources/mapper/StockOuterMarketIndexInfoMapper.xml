@@ -26,6 +26,25 @@
         from stock_outer_market_index_info
         where  id = #{id,jdbcType=VARCHAR} 
     </select>
+    <select id="getOutStock" resultType="com.itheima.stock.common.domain.StockOutDomain">
+        SELECT
+            somi.market_code as code,
+            somi.market_name AS name,
+            somi.cur_point AS curPoint,
+            somi.updown AS upDown,
+            somi.rose AS rose,
+            somi.cur_time AS curTime
+        FROM
+            stock_outer_market_index_info AS somi
+        WHERE  somi.market_code in <foreach collection="stockIds" item="ids" open="(" close=")" separator=",">
+        #{ids}
+    </foreach>
+             and  somi.cur_time = #{date}
+        ORDER BY
+            somi.cur_point DESC
+        LIMIT 4
+
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_outer_market_index_info

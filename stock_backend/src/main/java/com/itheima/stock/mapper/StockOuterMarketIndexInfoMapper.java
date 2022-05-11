@@ -1,6 +1,12 @@
 package com.itheima.stock.mapper;
 
+import com.itheima.stock.common.domain.StockOutDomain;
 import com.itheima.stock.pojo.StockOuterMarketIndexInfo;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author Renhanlu
@@ -8,6 +14,7 @@ import com.itheima.stock.pojo.StockOuterMarketIndexInfo;
 * @createDate 2022-05-08 16:06:52
 * @Entity com.itheima.stock.pojo.StockOuterMarketIndexInfo
 */
+@Mapper
 public interface StockOuterMarketIndexInfoMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -21,5 +28,8 @@ public interface StockOuterMarketIndexInfoMapper {
     int updateByPrimaryKeySelective(StockOuterMarketIndexInfo record);
 
     int updateByPrimaryKey(StockOuterMarketIndexInfo record);
+
+    List<StockOutDomain> getOutStock(@Param("date") Date date,
+                                     @Param("stockIds") List<String> stockIds);
 
 }

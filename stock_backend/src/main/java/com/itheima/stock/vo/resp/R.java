@@ -1,4 +1,4 @@
-package com.itheima.stock.vo;
+package com.itheima.stock.vo.resp;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

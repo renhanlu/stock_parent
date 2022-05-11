@@ -1,4 +1,4 @@
-package com.itheima.stock.vo;
+package com.itheima.stock.vo.resp;
 
 /**
  * @author by itheima

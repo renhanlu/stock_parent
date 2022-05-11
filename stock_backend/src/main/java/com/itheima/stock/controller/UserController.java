@@ -1,9 +1,9 @@
 package com.itheima.stock.controller;
 
 import com.itheima.stock.service.UserService;
-import com.itheima.stock.vo.LoginReqVo;
-import com.itheima.stock.vo.LoginRespVo;
-import com.itheima.stock.vo.R;
+import com.itheima.stock.vo.req.LoginReqVo;
+import com.itheima.stock.vo.resp.LoginRespVo;
+import com.itheima.stock.vo.resp.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

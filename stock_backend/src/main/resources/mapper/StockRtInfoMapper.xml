@@ -29,12 +29,73 @@
         select
         <include refid="Base_Column_List" />
         from stock_rt_info
-        where  id = #{id,jdbcType=VARCHAR} 
+        where  id = #{id,jdbcType=VARCHAR}
+    </select>
+    <!--
+    查询沪深两市最新交易数据
+    -->
+    <select id="getAllTransationData" resultType="com.itheima.stock.common.domain.StockUpdownDomain">
+        SELECT
+            sri.trade_amount AS tradeAmt,
+            sri.pre_close_price AS preClosePrice,
+            (sri.max_price-sri.min_price)/sri.pre_close_price AS amplitude,
+            sri.stock_code AS code,
+            sri.stock_name AS name,
+            sri.cur_time AS curDate,
+            sri.cur_price-sri.pre_close_price AS increase,
+            sri.trade_volume AS tradeVol,
+            (sri.cur_price-sri.pre_close_price)/sri.pre_close_price AS upDown,
+            sri.cur_price AS tradePrice
+        FROM stock_rt_info AS sri
+        WHERE sri.cur_time=#{datetime}
+        ORDER BY upDown DESC
+        LIMIT 10
+    </select>
+
+<!--    分页查询-->
+    <select id="getAllByLimt" resultType="com.itheima.stock.common.domain.StockUpdownDomain">
+        SELECT
+            sri.trade_amount AS tradeAmt,
+            sri.pre_close_price as preClosePrice,
+            sri.stock_code as code,
+            sri.stock_name as name,
+            DATE_FORMAT(sri.cur_time,'%Y%m%d') as curDate,
+            sri.trade_volume AS tradeVol,
+            sri.cur_price AS tradePrice,
+            ( sri.cur_price-sri.pre_close_price ) AS upDown,## 涨跌
+            ( sri.cur_price - sri.pre_close_price )/ sri.pre_close_price AS increase, ## 涨幅
+            (sri.max_price- sri.min_price)/sri.pre_close_price as amplitude ##振幅
+        FROM
+            stock_rt_info AS sri
+        ORDER BY
+            increase DESC,sri.cur_time desc
+    </select>
+    <select id="getStockCount" resultType="java.util.Map">
+        SELECT
+            COUNT(*) AS count,
+            tmp.time as time
+        FROM
+            (
+                SELECT
+                    ( sri.cur_price - sri.pre_close_price )/ sri.pre_close_price AS increase,
+                    DATE_FORMAT( sri.cur_time, '%Y-%m-%d %H:%i' ) as time
+                FROM
+                    stock_rt_info AS sri
+                WHERE
+                    sri.cur_time BETWEEN #{startTime}
+                        AND #{closeTime}
+                <if test="flag==1">HAVING increase >=0.1
+                        </if>
+                        <if test="flag==0">HAVING increase &lt;=0.1
+                     </if>
+                        ) as tmp GROUP BY tmp.time ORDER BY
+            tmp.time asc;
+
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info
-        where  id = #{id,jdbcType=VARCHAR} 
+        where  id = #{id,jdbcType=VARCHAR}
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.itheima.stock.pojo.StockRtInfo" useGeneratedKeys="true">
         insert into stock_rt_info
@@ -110,11 +171,11 @@
                     trade_volume = #{tradeVolume,jdbcType=BIGINT},
                 </if>
         </set>
-        where   id = #{id,jdbcType=VARCHAR} 
+        where   id = #{id,jdbcType=VARCHAR}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.itheima.stock.pojo.StockRtInfo">
         update stock_rt_info
-        set 
+        set
             stock_code =  #{stockCode,jdbcType=CHAR},
             cur_time =  #{curTime,jdbcType=TIMESTAMP},
             stock_name =  #{stockName,jdbcType=VARCHAR},
@@ -125,6 +186,6 @@
             min_price =  #{minPrice,jdbcType=DECIMAL},
             trade_amount =  #{tradeAmount,jdbcType=DECIMAL},
             trade_volume =  #{tradeVolume,jdbcType=BIGINT}
-        where   id = #{id,jdbcType=VARCHAR} 
+        where   id = #{id,jdbcType=VARCHAR}
     </update>
 </mapper>

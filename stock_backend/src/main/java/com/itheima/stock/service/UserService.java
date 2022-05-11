@@ -1,8 +1,8 @@
 package com.itheima.stock.service;
 
-import com.itheima.stock.vo.LoginReqVo;
-import com.itheima.stock.vo.LoginRespVo;
-import com.itheima.stock.vo.R;
+import com.itheima.stock.vo.req.LoginReqVo;
+import com.itheima.stock.vo.resp.LoginRespVo;
+import com.itheima.stock.vo.resp.R;
 
 import java.util.Map;
 
