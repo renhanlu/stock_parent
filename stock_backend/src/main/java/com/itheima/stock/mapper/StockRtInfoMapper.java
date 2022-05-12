@@ -1,7 +1,10 @@
 package com.itheima.stock.mapper;
 
+import com.itheima.stock.common.domain.Stock4EvrDayDomain;
+import com.itheima.stock.common.domain.Stock4MinuteDomain;
 import com.itheima.stock.common.domain.StockUpdownDomain;
 import com.itheima.stock.pojo.StockRtInfo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,10 +41,42 @@ public interface StockRtInfoMapper {
     List<StockUpdownDomain> getAllByLimt();
 
     /**
-     *
+     *统计沪深两市T日(当前股票交易日)每分钟的涨跌停数据
      * @return
      */
+    @MapKey("time")
     List<Map> getStockCount(@Param("startTime") Date startTime,
                             @Param("closeTime") Date closeTime,
-                             @Param("flag")         Integer flag);
+                             @Param("flag")  Integer flag);
+
+    /**
+     * 获取个股分时数据
+     * @param curTime
+     * @param startTime
+     * @param code
+     * @return
+     */
+    List<Stock4MinuteDomain> getStockHour(@Param("curTime") Date curTime,
+                                          @Param("startTime") Date startTime,
+                                          @Param("code") String code);
+
+
+    /**
+     * 统计当前时间下（精确到分钟），股票在各个涨幅区间的数量
+     * @param date 开始时间
+     * @return
+     */
+    List<Map> getStockRateCount(@Param("date") Date date);
+
+
+    /**
+     * 个股日K数据查询
+     * @param toDate 开始时间
+     * @param date 结束时间
+     * @param code 股票
+     * @return
+     */
+    List<Stock4EvrDayDomain> getTimeDay(@Param("toDate") Date toDate,
+                                        @Param("date") Date date,
+                                        @Param("code") String code);
 }

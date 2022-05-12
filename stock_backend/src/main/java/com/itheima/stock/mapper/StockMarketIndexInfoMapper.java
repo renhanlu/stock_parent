@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author Renhanlu
@@ -32,4 +33,14 @@ public interface StockMarketIndexInfoMapper {
     List<InnerMarketDomain> getAllByMarket(@Param("marketIds") List<String> marketIds,
                                            @Param("time") Date time);
 
+    /**
+     *
+     * @param date  今日
+     * @param toDate 昨日
+     * @param stockIds 大盘Id
+     * @return
+     */
+    List<Map> etStockCompared(@Param("date") Date date,
+                              @Param("toDate") Date toDate,
+                              @Param("stockIds") List<String> stockIds);
 }

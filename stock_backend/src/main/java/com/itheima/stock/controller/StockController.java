@@ -1,9 +1,6 @@
 package com.itheima.stock.controller;
 
-import com.itheima.stock.common.domain.InnerMarketDomain;
-import com.itheima.stock.common.domain.StockBlockDomain;
-import com.itheima.stock.common.domain.StockOutDomain;
-import com.itheima.stock.common.domain.StockUpdownDomain;
+import com.itheima.stock.common.domain.*;
 import com.itheima.stock.service.StockService;
 import com.itheima.stock.vo.req.PageResult;
 import com.itheima.stock.vo.resp.R;
@@ -54,34 +51,79 @@ public class StockController {
 
     /**
      * 统计沪深两市涨停跌停数量
+     *
      * @return
      */
     @GetMapping("/stock/updown/count")
-    public R<Map>  getStockCount(){
+    public R<Map> getStockCount() {
         return stockService.getStockCount();
     }
 
     /**
      * 国内大盘信息导出
+     *
      * @param response
      * @param page
      * @param pageSize
      */
     @GetMapping("/stock/export")
-    public  void setFile(HttpServletResponse response,Integer page,Integer pageSize){
+    public void setFile(HttpServletResponse response, Integer page, Integer pageSize) {
         stockService.stockExport(response, page, pageSize);
     }
 
     /**
+     * 统计国内A股大盘T日和T-1日成交量对比功能（成交量为沪市和深市成交量之和）
+     *
+     * @return
+     */
+    @GetMapping("/stock/tradevol")
+    public R<Map> getStockCompared() {
+        return stockService.getStockCompared();
+    }
+
+    /**
+     * 查询个股分时K线数据
+     *
+     * @param code
+     * @return
+     */
+
+    @GetMapping("/stock/screen/time-sharing")
+    public R<List<Stock4MinuteDomain>> getStockHour(String code) {
+        return stockService.getStockHour(code);
+    }
+
+    /**
+     * 统计当前时间下（精确到分钟），股票在各个涨幅区间的数量
+     *
+     * @return
+     */
+    @GetMapping("/stock/updown")
+    public R<Map> getStockRateCount() {
+        return stockService.getStockRateCount();
+    }
+
+    /**
+     * 个股日K线 根据时间区间查询
+     * @param code
+     * @return
+     */
+    @GetMapping("/stock/screen/dkline")
+    public  R<List<Stock4EvrDayDomain>> getTimeDay(String code) {
+        return stockService.getTimeDay(code);
+    }
+
+
+    /**
      * 查询国外大盘数据
+     *
      * @return
      */
 
     @GetMapping("/external/index")
-    public  R<List<StockOutDomain>> getOutStock(){
+    public R<List<StockOutDomain>> getOutStock() {
         return stockService.getOutStock();
     }
 
 
-
-}  
+}

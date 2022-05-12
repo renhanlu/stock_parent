@@ -36,7 +36,8 @@
             somi.cur_time AS curTime
         FROM
             stock_outer_market_index_info AS somi
-        WHERE  somi.market_code in <foreach collection="stockIds" item="ids" open="(" close=")" separator=",">
+        WHERE  somi.market_code in
+        <foreach collection="stockIds" item="ids" open="(" close=")" separator=",">
         #{ids}
     </foreach>
              and  somi.cur_time = #{date}

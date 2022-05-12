@@ -1,9 +1,6 @@
 package com.itheima.stock.service;
 
-import com.itheima.stock.common.domain.InnerMarketDomain;
-import com.itheima.stock.common.domain.StockBlockDomain;
-import com.itheima.stock.common.domain.StockOutDomain;
-import com.itheima.stock.common.domain.StockUpdownDomain;
+import com.itheima.stock.common.domain.*;
 import com.itheima.stock.vo.req.PageResult;
 import com.itheima.stock.vo.resp.R;
 
@@ -52,7 +49,34 @@ public interface StockService {
      */
     void stockExport(HttpServletResponse response, Integer page, Integer pageSize);
 
+    /**
+     * 获取外国大盘数据
+     * @return
+     */
     R<List<StockOutDomain>> getOutStock();
 
+    /**
+     * 统计国内A股大盘T日和T-1日成交量对比功能（成交量为沪市和深市成交量之和）
+     * @return
+     */
+
+    R<Map> getStockCompared();
+
+    /**
+     * 查询个股的分时行情数据
+     * @param code
+     * @return
+     */
+
+    R<List<Stock4MinuteDomain>> getStockHour(String code);
+
+
+    /**
+     * 统计当前时间下（精确到分钟），股票在各个涨幅区间的数量
+     * @return
+     */
+    R<Map> getStockRateCount();
+
+    R<List<Stock4EvrDayDomain>> getTimeDay(String code);
 }
 

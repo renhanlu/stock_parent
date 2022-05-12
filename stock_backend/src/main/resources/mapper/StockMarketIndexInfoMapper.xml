@@ -53,6 +53,25 @@
         </foreach>
         AND smi.cur_time = #{time};
     </select>
+    <select id="etStockCompared" resultType="java.util.Map">
+
+        SELECT
+        date_format(smi.cur_time,'%Y%m%d%H%i') as time,
+            sum( smi.trade_amount ) AS count
+        FROM
+            stock_market_index_info AS smi
+        WHERE
+            smi.cur_time BETWEEN #{date}
+                AND #{toDate}
+          AND smi.market_code IN
+              <foreach collection="stockIds" item="ids" separator="," open="(" close=")">
+              #{ids}
+            </foreach>
+        GROUP BY
+            smi.cur_time
+        ORDER BY
+            smi.cur_time ASC
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_market_index_info
