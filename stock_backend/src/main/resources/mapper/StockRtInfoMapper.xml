@@ -35,20 +35,21 @@
     查询沪深两市最新交易数据
     -->
     <select id="getAllTransationData" resultType="com.itheima.stock.common.domain.StockUpdownDomain">
-        SELECT sri.trade_amount                                            AS tradeAmt,
-               sri.pre_close_price                                         AS preClosePrice,
-               (sri.max_price - sri.min_price) / sri.pre_close_price       AS amplitude,
-               sri.stock_code                                              AS code,
-               sri.stock_name                                              AS name,
-               sri.cur_time                                                AS curDate,
-               sri.cur_price - sri.pre_close_price                         AS increase,
-               sri.trade_volume                                            AS tradeVol,
-               (sri.cur_price - sri.pre_close_price) / sri.pre_close_price AS upDown,
-               sri.cur_price                                               AS tradePrice
-        FROM stock_rt_info AS sri
-        WHERE sri.cur_time = #{datetime}
-        ORDER BY upDown DESC
-        LIMIT 10
+        select
+            sri.trade_amount as tradeAmt,
+            sri.pre_close_price as preClosePrice,
+            (sri.max_price- sri.min_price)/sri.pre_close_price as amplitude,
+            sri.stock_code as code,
+            sri.stock_name as name,
+            date_format(sri.cur_time,'%Y%m%d') as curDate,
+            sri.trade_volume as tradeVol,
+            (sri.cur_price-sri.pre_close_price) as upDown,
+            (sri.cur_price- sri.pre_close_price)/sri.pre_close_price as increase,
+            sri.cur_price as tradePrice
+        from stock_rt_info as sri
+        where sri.cur_time=#{datetime}
+        order by upDown desc
+        limit 10;
     </select>
 
     <!--    分页查询-->
