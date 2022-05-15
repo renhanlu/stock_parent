@@ -226,7 +226,7 @@
         FROM
             stock_rt_info AS sri
         WHERE
-            sri.stock_code=#{code} AND sri.cur_time=DATE_FORMAT(#{date},'%Y%m%d%H%i')
+            sri.stock_code=#{code} AND sri.cur_time=#{date}
 
     </select>
 

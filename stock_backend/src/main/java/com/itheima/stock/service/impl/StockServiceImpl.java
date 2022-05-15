@@ -330,6 +330,12 @@ public class StockServiceImpl implements StockService {
         return R.ok(IndividualByWeek);
     }
 
+    /**
+     *
+     *   获取个股最新分时行情数据
+     * @param code
+     * @return
+     */
     @Override
     public R<Map> getQuotesByHour(String code) {
 //        1.获取最新的交易时间

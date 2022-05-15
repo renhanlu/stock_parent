@@ -1,6 +1,7 @@
 package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysPermission;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
 * @author Renhanlu
@@ -8,6 +9,7 @@ import com.itheima.stock.pojo.SysPermission;
 * @createDate 2022-05-08 16:06:52
 * @Entity com.itheima.stock.pojo.SysPermission
 */
+@Mapper
 public interface SysPermissionMapper {
 
     int deleteByPrimaryKey(Long id);

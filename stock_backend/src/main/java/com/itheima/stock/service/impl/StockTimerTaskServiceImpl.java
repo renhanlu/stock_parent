@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
@@ -49,6 +50,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
     private StockRtInfoMapper stockRtInfoMapper;
     @Autowired
     private StockBlockRtInfoMapper stockBlockRtInfoMapper;
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 
     /**
@@ -103,12 +106,13 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
 //            组装到一个集合中
             list.add(stockMarketIndexInfo);
         }
-        //批量插入
+
         if (CollectionUtils.isEmpty(list)) {
+            log.info("长度{}", list.size());
             return;
         }
 //        批量插入到数据库中
-        int count = stockMarketIndexInfoMapper.insertStock(list);
+//        int count = stockMarketIndexInfoMapper.insertStock(list);
 
 
     }
@@ -123,7 +127,6 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         stockIds=stockIds.stream().map(s -> {
             return s.startsWith("6") ? "sh" + s : "sz" + s;
         }).collect(Collectors.toList());
-
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Referer", "https://finance.sina.com.cn/stock/");
         httpHeaders.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
@@ -136,9 +139,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
             //            批量添加
             int count = stockRtInfoMapper.insertStock(infos);
             log.info("插入数量{}", count);
-
         });
-
     }
 
     /**
@@ -149,12 +150,16 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         String forObject = restTemplate.getForObject(stockInfoConfig.getBlockUrl(), String.class);
         List<StockBlockRtInfo> stockBlockRtInfos = parserStockInfoUtil.parse4StockBlock(forObject);
         log.info("数据为{}",stockBlockRtInfos.size());
-        Lists.partition(stockBlockRtInfos,20).forEach(list->{
-            //20个一组，批量插入
-            //        批量添加
-            int count = stockBlockRtInfoMapper.insertStockAll(stockBlockRtInfos);
-            log.info("插入数量{}",count);
+        threadPoolTaskExecutor.execute(()->{
+            Lists.partition(stockBlockRtInfos,20).forEach(list->{
+                //20个一组，批量插入
+                //        批量添加
+                int count = stockBlockRtInfoMapper.insertStockAll(stockBlockRtInfos);
+                log.info("插入数量{}",count);
+            });
         });
+
+
 //        String rag = "var S_Finance_bankuai_sinaindustry = (.*)";
 //        Pattern compile = Pattern.compile(rag);
 //        Matcher matcher = compile.matcher(forObject);
@@ -165,7 +170,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
 //
 //            String s = mapInfo.toString();
 //            String[] stock = s.split(",");
-////            板块编码
+//            板块编码
 //            String label = stock[0];
 //            //板块行业
 //            String blockName = stock[1];
