@@ -1,8 +1,6 @@
 package com.itheima.stock.mapper;
 
-import com.itheima.stock.common.domain.Stock4EvrDayDomain;
-import com.itheima.stock.common.domain.Stock4MinuteDomain;
-import com.itheima.stock.common.domain.StockUpdownDomain;
+import com.itheima.stock.common.domain.*;
 import com.itheima.stock.pojo.StockRtInfo;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Mapper;
@@ -79,4 +77,31 @@ public interface StockRtInfoMapper {
     List<Stock4EvrDayDomain> getTimeDay(@Param("toDate") Date toDate,
                                         @Param("date") Date date,
                                         @Param("code") String code);
+
+    /**
+     * 模糊查询股票
+     * @param searchStr 股票代码
+     * @return
+     */
+    List<StockSearchDomain> selectStockByLike(@Param("searchStr") String searchStr);
+
+
+    /**
+     * 个股周K线
+     * @param code
+     * @return
+     */
+   List<Map> getIndividualStocksByWeek(@Param("code") String code);
+
+    /**
+     *个股最新行情获取
+     * @param code 股票编码
+     * @param date 时间1
+     *
+     * @return
+     */
+    Map getQuotesByHour(@Param("code") String code,
+                        @Param("date") String date);
+
+    int insertStock(@Param("infos") List<StockRtInfo> infos);
 }

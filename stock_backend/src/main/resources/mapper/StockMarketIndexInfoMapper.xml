@@ -117,6 +117,23 @@
                 <if test="tradeVolume != null">#{tradeVolume,jdbcType=DECIMAL},</if>
         </trim>
     </insert>
+    <insert id="insertStock">
+        insert into stock_market_index_info
+        ( id,market_code,cur_time
+        ,market_name,pre_close_point,open_point
+        ,cur_point,min_point,max_point
+        ,trade_amount,trade_volume)
+        values <foreach collection="list" item="li" separator=",">
+
+        (#{li.id,jdbcType=VARCHAR},#{li.marketCode,jdbcType=CHAR},#{li.curTime,jdbcType=TIMESTAMP}
+        ,#{li.marketName,jdbcType=VARCHAR},#{li.preClosePoint,jdbcType=DECIMAL},#{li.openPoint,jdbcType=DECIMAL}
+        ,#{li.curPoint,jdbcType=DECIMAL},#{li.minPoint,jdbcType=DECIMAL},#{li.maxPoint,jdbcType=DECIMAL}
+        ,#{li.tradeAmount,jdbcType=BIGINT},#{li.tradeVolume,jdbcType=DECIMAL})
+
+    </foreach>
+
+
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.StockMarketIndexInfo">
         update stock_market_index_info
         <set>

@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author Renhanlu
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class StockOutDomain   {
 
-    /**
-     *
-     */
+
     /**
      * 外盘名称
      */

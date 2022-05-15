@@ -1,15 +1,22 @@
 package com.itheima.stock.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 个股详情信息表
  * @TableName stock_rt_info
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class StockRtInfo implements Serializable {
     /**
      * 主键字段（无业务意义）
@@ -59,12 +66,12 @@ public class StockRtInfo implements Serializable {
     /**
      * 成交金额(单位元)
      */
-    private BigDecimal tradeAmount;
+    private Long tradeAmount;
 
     /**
      * 成交总量
      */
-    private Long tradeVolume;
+    private BigDecimal tradeVolume;
 
     private static final long serialVersionUID = 1L;
 }

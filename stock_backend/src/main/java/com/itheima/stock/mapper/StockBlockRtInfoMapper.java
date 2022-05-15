@@ -31,4 +31,6 @@ public interface StockBlockRtInfoMapper {
 
 
     List<StockBlockDomain> getAllMarketBytime (@Param("datePoint") Date datePoint);
+
+    int insertStockAll(@Param("stockIds") List<StockBlockRtInfo> stockBlockRtInfos);
 }

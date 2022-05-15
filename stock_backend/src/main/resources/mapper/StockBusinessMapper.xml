@@ -31,6 +31,21 @@
         <include refid="Base_Column_List" />
         from stock_business
     </select>
+    <select id="getIndividualStocks" resultType="com.itheima.stock.common.domain.StockBusinessDomain">
+        SELECT
+            sb.sec_code as code,
+            sb.sector_name as trade,
+            sb.business as business,
+            sb.sec_name as name
+        FROM
+            stock_business AS sb WHERE sb.sec_code=#{code}
+    </select>
+    <select id="getStockIds" resultType="java.lang.String">
+        select
+            sec_code
+        from stock_business
+    </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_business

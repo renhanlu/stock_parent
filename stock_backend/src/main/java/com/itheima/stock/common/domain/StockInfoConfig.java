@@ -20,4 +20,9 @@ public class StockInfoConfig {
 
 //    股票区间
     private List<String> upDownRange;
+
+
+    private String marketUrl;
+
+    private String blockUrl;
 }

@@ -18,6 +18,9 @@
         <result property="tradeVolume" column="trade_volume" jdbcType="BIGINT"/>
     </resultMap>
 
+
+
+
     <sql id="Base_Column_List">
         id,stock_code,cur_time,
         stock_name,open_price,pre_close_price,
@@ -48,7 +51,7 @@
             sri.cur_price as tradePrice
         from stock_rt_info as sri
         where sri.cur_time=#{datetime}
-        order by upDown desc
+        order by upDown    desc
         limit 10;
     </select>
 
@@ -107,6 +110,7 @@
             AND #{startTime}
           AND sri.stock_code = #{code}
     </select>
+
     <select id="getStockRateCount" resultType="java.util.Map">
         <![CDATA[
         SELECT tmp1.title,
@@ -137,33 +141,95 @@
         ]]>
     </select>
     <select id="getTimeDay" resultType="com.itheima.stock.common.domain.Stock4EvrDayDomain">
-
-        SELECT
-            sri1.cur_time as date,
-            sri1.trade_amount as tradeAmt,
-            sri1.stock_code as code,
-            sri1.min_price lowPrice,
-            sri1.stock_name as name,
-            sri1.max_price as highPrice,
-            sri1.open_price as openPrice,
-            sri1.trade_volume as tardeVol,
-            sri1.cur_price as closePrice,
-            sri1.pre_close_price as preClosePrice
+        select
+            date_format(sri2.cur_time,'%Y%m%d') as date,
+            sri2.trade_amount as tradeAmt,
+            sri2.stock_code as code,
+            sri2.min_price as lowPrice,
+            sri2.stock_name as name,
+            sri2.max_price as highPrice,
+            sri2.open_price as openPrice,
+            sri2.trade_volume as tradeVol,
+            sri2.cur_price as closePrice,
+            sri2.pre_close_price as preClosePrice
         from
-            stock_rt_info as sri1 WHERE sri1.cur_time IN
-         (
-             SELECT
-                 MAX(sri.cur_time) as closeDate
-             FROM
-                 stock_rt_info AS sri
-             WHERE
-                 sri.stock_code = #{code}
-               AND sri.cur_time BETWEEN #{toDate}
-                 AND #{date}
-             GROUP BY
-                 date_format( sri.cur_time, '%Y%m%d'))  order by sri1.cur_time;
+            stock_rt_info as sri2
+        where sri2.stock_code='600021'  and sri2.cur_time in (
+            select
+                max( sri.cur_time ) as closeDate
+            from
+                stock_rt_info as sri
+            where
+                sri.stock_code =#{code}
+              and sri.cur_time between #{toDate} and #{date}
+            group by
+                date_format(sri.cur_time, '%Y%m%d')
+        )
+        order by sri2.cur_time;
 
     </select>
+    <select id="selectStockByLike" resultType="com.itheima.stock.common.domain.StockSearchDomain">
+
+        SELECT
+            sri.stock_code as code,
+            sri.stock_name as name
+        FROM
+            stock_rt_info AS sri
+        WHERE
+            sri.stock_code LIKE  concat('%',#{searchStr},'%')
+        limit 20
+    </select>
+<!--    个股周K线-->
+    <select id="getIndividualStocksByWeek" resultType="java.util.Map">
+        SELECT
+            tmp.stock_code,
+            tmp.maxPrice,
+            tmp.minPrice,
+            tmp.avgPrice,
+            sri.cur_price AS openPrice,
+            sri2.cur_price AS closePrice,
+            DATE_FORMAT(tmp.mxTime,'%Y%m%d') as mxTime
+        FROM
+            (
+                SELECT
+                    stock_code,
+                    DATE_FORMAT( cur_time, '%Y-%u' ) AS weeks,
+                    avg( cur_price ) AS avgPrice,
+                    min( cur_price ) AS minPrice,
+                    MAX( cur_time ) AS mxTime,
+                    MIN( cur_time ) AS miTime,
+                    max( cur_price ) AS maxPrice
+                FROM
+                    stock_rt_info
+                WHERE
+                    stock_code = #{code}
+                GROUP BY
+                    weeks
+            ) AS tmp
+                INNER JOIN stock_rt_info AS sri ON tmp.stock_code = sri.stock_code
+                AND sri.cur_time = tmp.miTime
+                INNER JOIN stock_rt_info AS sri2 ON sri2.stock_code = tmp.stock_code
+                AND sri2.cur_time = tmp.mxTime
+        ORDER BY
+            mxTime ASC
+    </select>
+    <select id="getQuotesByHour" resultType="java.util.Map">
+        SELECT
+            sri.pre_close_price AS preClosePrice,
+            sri.open_price AS openPrice,
+            sri.cur_price AS tradePrice,
+            sri.max_price AS highPrice,
+            sri.min_price AS lowPrice,
+            sri.trade_amount AS tradeAmt,
+            sri.trade_volume AS tradeVol,
+            DATE_FORMAT(sri.cur_time,'%Y%m%d%H%i') AS curDate
+        FROM
+            stock_rt_info AS sri
+        WHERE
+            sri.stock_code=#{code} AND sri.cur_time=DATE_FORMAT(#{date},'%Y%m%d%H%i')
+
+    </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
@@ -211,6 +277,19 @@
             <if test="tradeAmount != null">#{tradeAmount,jdbcType=DECIMAL},</if>
             <if test="tradeVolume != null">#{tradeVolume,jdbcType=BIGINT},</if>
         </trim>
+    </insert>
+    <insert id="insertStock">
+        insert into stock_rt_info
+        ( id, stock_code, cur_time
+        , stock_name, open_price, pre_close_price
+        , cur_price, max_price, min_price
+        , trade_amount, trade_volume)
+        values <foreach collection="infos" item="info" separator=",">
+        ( #{info.id,jdbcType=VARCHAR}, #{info.stockCode,jdbcType=CHAR}, #{info.curTime,jdbcType=TIMESTAMP}
+        , #{info.stockName,jdbcType=VARCHAR}, #{info.openPrice,jdbcType=DECIMAL}, #{info.preClosePrice,jdbcType=DECIMAL}
+        , #{info.curPrice,jdbcType=DECIMAL}, #{info.maxPrice,jdbcType=DECIMAL}, #{info.minPrice,jdbcType=DECIMAL}
+        , #{info.tradeAmount,jdbcType=DECIMAL}, #{info.tradeVolume,jdbcType=BIGINT})
+    </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.StockRtInfo">
         update stock_rt_info

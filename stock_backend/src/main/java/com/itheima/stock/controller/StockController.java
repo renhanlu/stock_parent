@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Renhanlu
+ */
 @RestController
 @RequestMapping("/api/quot")
 @CrossOrigin
@@ -41,9 +44,12 @@ public class StockController {
         return stockService.getLatest();
     }
 
-    /*
+    /**
      * 查询沪深两市个股行情 ，以时间顺序和涨幅分页查询
-     * */
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @GetMapping("/stock/all")
     public R<PageResult<StockUpdownDomain>> getDealsByLimit(Integer page, Integer pageSize) {
         return stockService.getbyPage(page, pageSize);
@@ -125,5 +131,45 @@ public class StockController {
         return stockService.getOutStock();
     }
 
+    /**
+     * 股票模糊查询 只支持代码 不支持名称
+     * @param searchStr
+     * @return
+     */
+
+    @GetMapping("/stock/search")
+    public R<List<StockSearchDomain>> selectStockByLike(String searchStr) {
+        return stockService.selectStockByLike(searchStr);
+    }
+
+    /**
+     * 个股主营业务查询
+     * @param code
+     * @return
+     */
+    @GetMapping("/stock/describe")
+    public  R<StockBusinessDomain>  getIndividualStocks(String code) {
+        return stockService.getIndividualStocks(code);
+    }
+
+    /**
+     * 个股周K线
+     * @param code
+     * @return
+     */
+    @GetMapping("/stock/ screen/weekkline")
+    public R<List<Map>> getIndividualStocksByWeek(String code) {
+        return stockService.getIndividualStocksByWeek(code);
+    }
+
+    /**
+     * 获取个股最新分时行情数据
+     * @param code
+     * @return
+     */
+    @GetMapping("/stock/screen/second/detail")
+    public  R<Map> getQuotesByHour(String code) {
+        return stockService.getQuotesByHour(code);
+    }
 
 }

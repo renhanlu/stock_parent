@@ -8,11 +8,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Renhanlu
+ */
 public interface StockService {
 
-    /*
-       查询国内大盘指数
-     * */
+    /**
+     * 查询国内大盘指数
+     * @return
+     */
     R<List<InnerMarketDomain>> getMarketAll();
 
     /*
@@ -77,6 +81,40 @@ public interface StockService {
      */
     R<Map> getStockRateCount();
 
+    /**
+     * 分天K线
+     * @param code
+     * @return
+     */
     R<List<Stock4EvrDayDomain>> getTimeDay(String code);
+
+    /**
+     * 模糊查询股票信息
+     * @param searchStr
+     * @return
+     */
+    R<List<StockSearchDomain>> selectStockByLike(String searchStr);
+
+
+    /**
+     * 个股主营业务查询
+     * @param code
+     * @return
+     */
+    R<StockBusinessDomain> getIndividualStocks(String code);
+
+    /**
+     * 个股周K线
+     * @param code
+     * @return
+     */
+    R<List<Map>> getIndividualStocksByWeek(String code);
+
+    /**
+     * 个股分时行情获取
+     * @param code
+     * @return
+     */
+    R<Map> getQuotesByHour(String code);
 }
 

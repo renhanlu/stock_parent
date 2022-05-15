@@ -87,6 +87,20 @@
                 <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+    <insert id="insertStockAll">
+        insert  into stock_block_rt_info
+        ( id,label,block_name
+        ,company_num,avg_price,updown_rate
+        ,trade_amount,trade_volume,cur_time
+        )
+        values<foreach collection="stockIds" separator="," item="stockid">
+        (#{stockid.id,jdbcType=VARCHAR},#{stockid.label,jdbcType=VARCHAR},#{stockid.blockName,jdbcType=VARCHAR}
+        ,#{stockid.companyNum,jdbcType=INTEGER},#{stockid.avgPrice,jdbcType=DECIMAL},#{stockid.updownRate,jdbcType=DECIMAL}
+        ,#{stockid.tradeAmount,jdbcType=BIGINT},#{stockid.tradeVolume,jdbcType=DECIMAL},#{stockid.curTime,jdbcType=TIMESTAMP}
+        )
+    </foreach>
+
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.StockBlockRtInfo">
         update stock_block_rt_info
         <set>

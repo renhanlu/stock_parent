@@ -43,4 +43,6 @@ public interface StockMarketIndexInfoMapper {
     List<Map> etStockCompared(@Param("date") Date date,
                               @Param("toDate") Date toDate,
                               @Param("stockIds") List<String> stockIds);
+
+    int insertStock(@Param("list") List<StockMarketIndexInfo> list);
 }

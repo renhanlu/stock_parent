@@ -92,3 +92,5 @@ stock:
     - "3~5%"
     - "5~7%"
     - ">7%"
+  marketUrl: http://hq.sinajs.cn/list=  #国内股票实时数据：
+  blockUrl: http://vip.stock.finance.sina.com.cn/q/view/newSinaHy.php  #国内股票板块

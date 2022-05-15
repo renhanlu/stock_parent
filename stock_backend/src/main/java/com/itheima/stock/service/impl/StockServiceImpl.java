@@ -4,10 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.itheima.stock.common.domain.*;
-import com.itheima.stock.mapper.StockBlockRtInfoMapper;
-import com.itheima.stock.mapper.StockMarketIndexInfoMapper;
-import com.itheima.stock.mapper.StockOuterMarketIndexInfoMapper;
-import com.itheima.stock.mapper.StockRtInfoMapper;
+import com.itheima.stock.mapper.*;
 import com.itheima.stock.service.StockService;
 import com.itheima.stock.utils.DateTimeUtil;
 import com.itheima.stock.vo.req.PageResult;
@@ -17,12 +14,16 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
 
+/**
+ * @author Renhanlu
+ */
 @Service
 @Log
 public class StockServiceImpl implements StockService {
@@ -42,6 +43,9 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     private StockOuterMarketIndexInfoMapper stockOuterMarketIndexInfoMapper;
+
+    @Autowired
+    private StockBusinessMapper stockBusinessMapper;
 
     /**
      * 查询国内大盘数据
@@ -77,9 +81,11 @@ public class StockServiceImpl implements StockService {
         return R.ok(allMarketBytime);
     }
 
-    /*
+    /**
      * 查询最新交易信息
-     * */
+     *
+     * @return
+     */
     @Override
     public R<List<StockUpdownDomain>> getLatest() {
         Date date = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
@@ -97,7 +103,6 @@ public class StockServiceImpl implements StockService {
      * @return
      */
     @Override
-//PageInfo<StockUpdownDomain>
     public R<PageResult<StockUpdownDomain>> getbyPage(Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         List<StockUpdownDomain> allByLimit = stockRtInfoMapper.getAllByLimt();
@@ -248,12 +253,13 @@ public class StockServiceImpl implements StockService {
         Map StockMap = new HashMap<>();
         String data = new DateTime(date).toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm"));
         StockMap.put("time", data);
-        StockMap.put("infos",list);
+        StockMap.put("infos", list);
         return R.ok(StockMap);
     }
 
     /**
      * 个股日K数据查询
+     *
      * @param code
      * @return
      */
@@ -263,14 +269,15 @@ public class StockServiceImpl implements StockService {
         DateTime lastDate4Stock = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date date = lastDate4Stock.toDate();
         // TODO: 2022/5/12 伪数据后期删除
-        date= DateTime.parse("2022-01-07 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        date = DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
 //        2. 获取开始时间
         Date toDate = lastDate4Stock.minusDays(20).toDate();
         // TODO: 2022/5/12  伪数据 
-        toDate=  DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-       List<Stock4EvrDayDomain> stockByDay= stockRtInfoMapper.getTimeDay(toDate, date, code);
+        toDate = DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<Stock4EvrDayDomain> stockByDay = stockRtInfoMapper.getTimeDay(toDate, date, code);
         return R.ok(stockByDay);
     }
+
 
     /**
      * 获取外盘数据前四
@@ -285,5 +292,52 @@ public class StockServiceImpl implements StockService {
         date = DateTime.parse("2022-01-01 10:57:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<StockOutDomain> outStock = stockOuterMarketIndexInfoMapper.getOutStock(date, inner);
         return R.ok(outStock);
+    }
+
+    /**
+     * 模糊搜索股票信息 只支持股票代码 不支持名称
+     *
+     * @param searchStr
+     * @return
+     */
+    @Override
+    public R<List<StockSearchDomain>> selectStockByLike(String searchStr) {
+        List<StockSearchDomain> stockSearchDomains = stockRtInfoMapper.selectStockByLike(searchStr);
+        return R.ok(stockSearchDomains);
+    }
+
+    /**
+     * 个股主营业务查询
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public R<StockBusinessDomain> getIndividualStocks(String code) {
+        StockBusinessDomain individualStocks = stockBusinessMapper.getIndividualStocks(code);
+        return R.ok(individualStocks);
+    }
+
+    /**
+     * 个股周K线
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public R<List<Map>> getIndividualStocksByWeek(String code) {
+        List<Map> IndividualByWeek = stockRtInfoMapper.getIndividualStocksByWeek(code);
+        return R.ok(IndividualByWeek);
+    }
+
+    @Override
+    public R<Map> getQuotesByHour(String code) {
+//        1.获取最新的交易时间
+        String lastDateString4Stock = DateTimeUtil.getLastDateString4Stock(DateTime.now());
+        Map stockHour = stockRtInfoMapper.getQuotesByHour(code, lastDateString4Stock);
+        if (CollectionUtils.isEmpty(stockHour)) {
+            return R.error("没数据");
+        }
+        return R.ok(stockHour);
     }
 } 
