@@ -6,10 +6,20 @@ import com.itheima.stock.vo.resp.R;
 
 import java.util.Map;
 
+/**
+ * @author Renhanlu
+ */
 public interface UserService {
-//    登录
+    /**
+     * 登录
+     * @param vo
+     * @return
+     */
     R<LoginRespVo> login(LoginReqVo vo);
 
-    //    验证码
+    /**
+     * 登录验证码
+     * @return
+     */
     R<Map> captcha();
 }

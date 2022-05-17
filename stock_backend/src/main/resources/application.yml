@@ -94,6 +94,7 @@ stock:
     - ">7%"
   marketUrl: http://hq.sinajs.cn/list=  #国内股票实时数据：
   blockUrl: http://vip.stock.finance.sina.com.cn/q/view/newSinaHy.php  #国内股票板块
+  outUrl: http://hq.sinajs.cn/list= #国外大盘数据
 # XXJOB参数配置
 xxl:
   job:

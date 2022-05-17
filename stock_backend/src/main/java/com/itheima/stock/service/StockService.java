@@ -116,5 +116,12 @@ public interface StockService {
      * @return
      */
     R<Map> getQuotesByHour(String code);
+
+    /**
+     * 个股最新交易流水数据查询
+     * @param code 股票编码
+     * @return
+     */
+    R<List<Map>> getStockByNew(String code);
 }
 

@@ -36,4 +36,10 @@ public class StockJob {
     public void getStockCnInfo() {
          stockTimerTaskService.getStockCnInfo();
     }
+
+//    定时获取国外大盘数据
+    @XxlJob("getOutStock")
+    public  void getOutStock(){
+        stockTimerTaskService.getOutStock();
+    }
 }

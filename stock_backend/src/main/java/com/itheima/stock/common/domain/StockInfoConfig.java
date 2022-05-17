@@ -25,4 +25,6 @@ public class StockInfoConfig {
     private String marketUrl;
 
     private String blockUrl;
+
+    private String outUrl;
 }

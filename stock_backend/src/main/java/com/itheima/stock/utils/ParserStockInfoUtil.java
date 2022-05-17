@@ -136,6 +136,7 @@ public class ParserStockInfoUtil {
                 .marketCode(marketCode)
                 .curPoint(curPoint)
                 .updown(upDown)
+                .marketName(marketName)
                 .rose(rose)
                 .curTime(now)
                 .build();

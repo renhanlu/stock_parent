@@ -46,6 +46,7 @@ public class StockController {
 
     /**
      * 查询沪深两市个股行情 ，以时间顺序和涨幅分页查询
+     *
      * @param page
      * @param pageSize
      * @return
@@ -111,11 +112,12 @@ public class StockController {
 
     /**
      * 个股日K线 根据时间区间查询
+     *
      * @param code
      * @return
      */
     @GetMapping("/stock/screen/dkline")
-    public  R<List<Stock4EvrDayDomain>> getTimeDay(String code) {
+    public R<List<Stock4EvrDayDomain>> getTimeDay(String code) {
         return stockService.getTimeDay(code);
     }
 
@@ -133,6 +135,7 @@ public class StockController {
 
     /**
      * 股票模糊查询 只支持代码 不支持名称
+     *
      * @param searchStr
      * @return
      */
@@ -144,32 +147,45 @@ public class StockController {
 
     /**
      * 个股主营业务查询
+     *
      * @param code
      * @return
      */
     @GetMapping("/stock/describe")
-    public  R<StockBusinessDomain>  getIndividualStocks(String code) {
+    public R<StockBusinessDomain> getIndividualStocks(String code) {
         return stockService.getIndividualStocks(code);
     }
 
     /**
      * 个股周K线
+     *
      * @param code
      * @return
      */
-    @GetMapping("/stock/ screen/weekkline")
+    @GetMapping("/stock/screen/weekkline")
     public R<List<Map>> getIndividualStocksByWeek(String code) {
         return stockService.getIndividualStocksByWeek(code);
     }
 
     /**
      * 获取个股最新分时行情数据
+     *
      * @param code
      * @return
      */
     @GetMapping("/stock/screen/second/detail")
-    public  R<Map> getQuotesByHour(String code) {
+    public R<Map> getQuotesByHour(String code) {
         return stockService.getQuotesByHour(code);
+    }
+
+    /**
+     * 个股最新交易流水行情
+     * @param code
+     * @return
+     */
+    @GetMapping("/stock/screen/second")
+    public R<List<Map>> getStockByNew(String code) {
+        return stockService.getStockByNew(code);
     }
 
 }

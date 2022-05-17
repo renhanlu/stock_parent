@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @author by itheima
  * @Date 2021/12/24
@@ -31,5 +33,23 @@ public class LoginRespVo {
      * 昵称
      */
     private String nickName;
+
+    private String realName;
+
+    private Integer sex;
+
+    private Integer status;
+
+    private String email;
+
+    /**
+     * 权限树
+     */
+    private List<Menu> menus;
+
+    /**
+     * 按钮权限集合
+     */
+    private List<String> permissions;
 
 }

@@ -32,4 +32,5 @@ public interface StockOuterMarketIndexInfoMapper {
     List<StockOutDomain> getOutStock(@Param("date") Date date,
                                      @Param("stockIds") List<String> stockIds);
 
+    int insertAll(@Param("list") List<StockOuterMarketIndexInfo> list);
 }

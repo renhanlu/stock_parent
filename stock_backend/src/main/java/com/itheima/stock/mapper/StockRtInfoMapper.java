@@ -101,7 +101,16 @@ public interface StockRtInfoMapper {
      * @return
      */
     Map getQuotesByHour(@Param("code") String code,
-                        @Param("date") String date);
+                        @Param("date") Date date);
 
     int insertStock(@Param("infos") List<StockRtInfo> infos);
+
+    /**
+     * 个股最新交易数据
+     * @param date 时间
+     * @param code 股票代码
+     * @return
+     */
+    List<Map> getStockByNew(@Param("date") Date date,
+                            @Param("stockCode") String code);
 }

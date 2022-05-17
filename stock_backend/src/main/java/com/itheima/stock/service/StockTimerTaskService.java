@@ -20,4 +20,11 @@ public interface StockTimerTaskService {
      * 板块数据拉取
      */
     void getPlateStock();
+
+    /**
+     * 国外板块数据拉取
+     */
+    void getOutStock();
+
+
 }

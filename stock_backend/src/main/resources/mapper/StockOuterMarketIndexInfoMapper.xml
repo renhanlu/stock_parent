@@ -81,6 +81,18 @@
                 <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+    <insert id="insertAll">
+        insert into stock_outer_market_index_info
+        ( id,market_code,market_name
+        ,cur_point,updown,rose
+        ,cur_time)
+        values
+        <foreach collection="list" item="lis" separator=",">
+            (#{lis.id,jdbcType=VARCHAR},#{lis.marketCode,jdbcType=CHAR},#{lis.marketName,jdbcType=VARCHAR}
+            ,#{lis.curPoint,jdbcType=DECIMAL},#{lis.updown,jdbcType=DECIMAL},#{lis.rose,jdbcType=DECIMAL}
+            ,#{lis.curTime,jdbcType=TIMESTAMP})
+    </foreach>
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.StockOuterMarketIndexInfo">
         update stock_outer_market_index_info
         <set>

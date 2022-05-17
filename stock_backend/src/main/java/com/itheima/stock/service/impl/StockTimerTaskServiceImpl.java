@@ -2,10 +2,7 @@ package com.itheima.stock.service.impl;
 
 import com.google.common.collect.Lists;
 import com.itheima.stock.common.domain.StockInfoConfig;
-import com.itheima.stock.mapper.StockBlockRtInfoMapper;
-import com.itheima.stock.mapper.StockBusinessMapper;
-import com.itheima.stock.mapper.StockMarketIndexInfoMapper;
-import com.itheima.stock.mapper.StockRtInfoMapper;
+import com.itheima.stock.mapper.*;
 import com.itheima.stock.pojo.StockBlockRtInfo;
 import com.itheima.stock.pojo.StockMarketIndexInfo;
 import com.itheima.stock.pojo.StockRtInfo;
@@ -52,6 +49,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
     private StockBlockRtInfoMapper stockBlockRtInfoMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private StockOuterMarketIndexInfoMapper stockOuterMarketIndexInfoMapper;
 
 
     /**
@@ -87,6 +86,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
             BigDecimal openPoint = new BigDecimal(msg[1]);
 //            昨日开盘价
             BigDecimal preClosePoint = new BigDecimal(msg[2]);
+            // 当前点
             BigDecimal curPoint = new BigDecimal(msg[3]);
             //获取大盘最高点
             BigDecimal maxPoint = new BigDecimal(msg[4]);
@@ -112,7 +112,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
             return;
         }
 //        批量插入到数据库中
-//        int count = stockMarketIndexInfoMapper.insertStock(list);
+        int count = stockMarketIndexInfoMapper.insertStock(list);
+        log.info("插入数量{}", count);
 
 
     }
@@ -193,7 +194,28 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
 //            list.add(build);
 //        }
 //        System.out.println(list);
-
-
     }
+
+    /**
+     * 国外板块数据拉取
+     */
+    @Override
+    public void getOutStock() {
+        String url = stockInfoConfig.getOutUrl() + String.join(",", stockInfoConfig.getOuter());
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Referer", "https://finance.sina.com.cn/stock/");
+        httpHeaders.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36");
+        HttpEntity<Object> HttpEntity = new HttpEntity<>(httpHeaders);
+        String s = restTemplate.postForObject(url, HttpEntity, String.class);
+        List list = parserStockInfoUtil.parser4StockOrMarketInfo(s, ParseType.OUTER);
+        //  var hq_str_b_FSSTI="富时新加坡海峡时报指数,3123.68,-2.96,-0.09";
+        //			大盘code      大盘名称       大盘点数    涨跌值    涨幅
+//        批量插入到数据库中
+
+        int count =stockOuterMarketIndexInfoMapper.insertAll(list);
+        log.info("当前数量",list.size());
+        log.info("插入数量{}", count);
+    }
+
+
 }
