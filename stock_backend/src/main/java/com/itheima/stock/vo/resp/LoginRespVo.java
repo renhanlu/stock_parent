@@ -43,9 +43,9 @@ public class LoginRespVo {
     private String email;
 
     /**
-     * 权限树
+     * 权限树（仅仅显示菜单，不是加载按钮信息）
      */
-    private List<Menu> menus;
+    private List<PermissionRespNodeVo> menus;
 
     /**
      * 按钮权限集合

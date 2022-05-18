@@ -2,6 +2,10 @@ package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysRole;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author Renhanlu
@@ -24,4 +28,16 @@ public interface SysRoleMapper {
 
     int updateByPrimaryKey(SysRole record);
 
+    /**
+     *
+     * @param userId
+     * @return
+     */
+   List<Map> getRoleMsg(@Param("userId") String userId);
+
+    /**
+     * 查所有的角色id
+     * @return
+     */
+    List<Map> getRoleIds();
 }

@@ -249,8 +249,11 @@ public class StockServiceImpl implements StockService {
 //        1.获取最近的交易时间
         DateTime lastDate4Stock = DateTimeUtil.getLastDate4Stock(DateTime.now()).minusMinutes(1);
         Date date = lastDate4Stock.toDate();
+        // TODO: 2022/5/18
+        date=DateTime.parse("2021-12-30 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
 //        2. 获取开始时间
         Date toDate = lastDate4Stock.minusDays(20).toDate();
+        toDate=DateTime.parse("2021-01-07 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<Stock4EvrDayDomain> stockByDay = stockRtInfoMapper.getTimeDay(toDate, date, code);
         return R.ok(stockByDay);
     }

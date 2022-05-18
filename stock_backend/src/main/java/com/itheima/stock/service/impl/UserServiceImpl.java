@@ -1,12 +1,21 @@
 package com.itheima.stock.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
 import com.itheima.stock.mapper.SysUserMapper;
+import com.itheima.stock.pojo.SysPermission;
 import com.itheima.stock.pojo.SysUser;
+import com.itheima.stock.pojo.UserPage;
+import com.itheima.stock.service.PermissionService;
 import com.itheima.stock.service.UserService;
 import com.itheima.stock.utils.IdWorker;
 import com.itheima.stock.vo.req.LoginReqVo;
+import com.itheima.stock.vo.req.PageResult;
+import com.itheima.stock.vo.req.UserAddReqVo;
+import com.itheima.stock.vo.req.UserReqVo;
 import com.itheima.stock.vo.resp.LoginRespVo;
+import com.itheima.stock.vo.resp.PermissionRespNodeVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.ResponseCode;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -17,8 +26,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +44,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private IdWorker idWorker;
+
+
+    @Autowired
+    private PermissionService permissionService;
+
 
 
     @Override
@@ -58,6 +74,17 @@ public class UserServiceImpl implements UserService {
         redisTemplate.delete(vo.getRkey());
         LoginRespVo loginRespVo = new LoginRespVo();
         BeanUtils.copyProperties(user, loginRespVo);
+        //获取指定用户的权限集合
+        List<SysPermission> permissions = permissionService.getPermissionByUserId(user.getId());
+        //获取树状权限菜单数据
+        List<PermissionRespNodeVo> tree = permissionService.getTree(permissions, "0", true);
+        //获取菜单按钮集合
+        List<String> authBtnPerms = permissions.stream()
+                .filter(per -> !Strings.isNullOrEmpty(per.getCode()) && per.getType() == 3)
+                .map(per -> per.getCode()).collect(Collectors.toList());
+        loginRespVo.setMenus(tree);
+        loginRespVo.setPermissions(authBtnPerms);
+
         return R.ok(loginRespVo);
     }
 
@@ -73,6 +100,36 @@ public class UserServiceImpl implements UserService {
         map.put("rkey",id);
         map.put("code",code);
         return R.ok(map);
+    }
+
+    @Override
+    public R<PageResult<UserPage>> selectByUser(UserReqVo userReqVo) {
+        PageHelper.startPage(userReqVo.getPageNum(), userReqVo.getPageSize());
+        List<UserPage> users = sysUserMapper.selectByPageAllUser(userReqVo.getUsername(),userReqVo.getNickname(),
+                userReqVo.getStartTime(),userReqVo.getEndTime());
+        PageInfo<UserPage> PageInfo = new PageInfo<>(users);
+        PageResult<UserPage> PageResult = new PageResult<>(PageInfo);
+        return R.ok(PageResult);
+    }
+
+    @Override
+    public R<String> addUser(UserAddReqVo userAddReqVo) {
+        SysUser user = new SysUser();
+        BeanUtils.copyProperties(userAddReqVo,user);
+        user.setId(idWorker.nextId()+"");
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPhone(user.getPhone());
+        user.setEmail(user.getEmail());
+        user.setNickName(user.getNickName());
+        user.setRealName(user.getRealName());
+        user.setSex(user.getSex());
+        user.setCreateWhere(user.getCreateWhere());
+        user.setStatus(user.getStatus());
+        int count = sysUserMapper.insert(user);
+        if (count == 0) {
+            return R.error();
+        }
+        return R.ok();
     }
 
 

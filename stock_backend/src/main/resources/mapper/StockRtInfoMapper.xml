@@ -154,7 +154,7 @@
             sri2.pre_close_price as preClosePrice
         from
             stock_rt_info as sri2
-        where sri2.stock_code='600021'  and sri2.cur_time in (
+        where sri2.stock_code=#{code}  and sri2.cur_time in (
             select
                 max( sri.cur_time ) as closeDate
             from

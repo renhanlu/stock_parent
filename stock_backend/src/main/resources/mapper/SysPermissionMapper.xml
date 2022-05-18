@@ -36,6 +36,19 @@
         from sys_permission
         where  id = #{id,jdbcType=VARCHAR} 
     </select>
+    <select id="getPermissionByUserId" resultMap="BaseResultMap">
+        SELECT
+            distinct  p.*
+        FROM
+            sys_role_permission AS rp,
+            sys_user_role AS ur,
+            sys_permission AS p
+        WHERE
+            ur.role_id = rp.role_id
+          AND rp.permission_id = p.id
+          AND ur.user_id = #{userId}
+    </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_permission

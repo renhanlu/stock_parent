@@ -2,6 +2,9 @@ package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysPermission;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Renhanlu
@@ -24,4 +27,5 @@ public interface SysPermissionMapper {
 
     int updateByPrimaryKey(SysPermission record);
 
+    List<SysPermission> getPermissionByUserId(@Param("userId") String userId);
 }

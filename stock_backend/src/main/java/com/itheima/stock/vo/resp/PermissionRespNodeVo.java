@@ -1,38 +1,37 @@
 package com.itheima.stock.vo.resp;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Menu {
+public class PermissionRespNodeVo {
+
     /**
-     * 权限id
+     * 角色ID
      */
     private String id;
     /**
-     * 权限标题
+     * 角色标题
      */
     private String title;
     /**
-     * 权限图标
+     * 角色图标
      */
     private String icon;
     /**
-     * 请求路径
+     * 路由地址URL
      */
     private String path;
+
     /**
-     * 权限名称
+     * 路由名称
      */
     private String name;
+
     /**
-     * 权限树
+     * 菜单数结构
      */
-    private List<Menu> children;
+    private List<PermissionRespNodeVo> children;
 
 }

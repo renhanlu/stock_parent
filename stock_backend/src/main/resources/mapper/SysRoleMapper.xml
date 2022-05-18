@@ -26,6 +26,22 @@
         from sys_role
         where  id = #{id,jdbcType=VARCHAR} 
     </select>
+    <select id="getRoleMsg" resultType="java.util.Map">
+        SELECT
+            sr.id,
+            sr.`name`,
+            sr.description,
+            sr.`status`,
+            sr.create_time as createTime,
+            sr.update_time as updateTime,
+            sr.deleted
+        FROM
+            sys_role sr  LEFT JOIN sys_user su on su.id=#{userId}
+    </select>
+    <select id="getRoleIds" resultType="java.util.Map">
+        SELECT sr.id from sys_role sr
+    </select>
+
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_role
