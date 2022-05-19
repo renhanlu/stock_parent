@@ -1,11 +1,14 @@
 package com.itheima.stock.controller;
 
+import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.service.RoleService;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
 import com.itheima.stock.vo.resp.R;
+import com.itheima.stock.vo.resp.UserRoleRespVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,17 +23,40 @@ public class UserRoleController {
     private RoleService roleService;
 
     /**
-     *获取用户具有的角色信息，以及所有的角色信息
+     * 获取用户具有的角色信息，以及所有的角色信息
+     *
      * @param userId
      * @return
      */
     @GetMapping("/user/roles/{userId}")
-    public R<Map> getRoleMsg(@PathVariable String userId) {
+    public R<UserRoleRespVo> getRoleMsg(@PathVariable String userId) {
         return roleService.getRoleMsg(userId);
     }
+
     @PutMapping("/user/roles")
-    public R  updateMsg(@RequestBody UpdateMsgReqVo updateMsgReqVo) {
-//        return roleService.updateMsg(updateMsgReqVo);
-        return null;
+    public R updateMsg(@RequestBody UpdateMsgReqVo updateMsgReqVo) {
+      return roleService.updateMsg(updateMsgReqVo);
+
     }
+
+    @DeleteMapping("/user")
+    public R deleteByIds(@RequestBody List<Long> userIds) {
+        return roleService.deleteByIds(userIds);
+    }
+
+    /**
+     * 根据Id查找用户
+     * @param id
+     * @return
+     */
+    @GetMapping("/user/info/{userId}")
+    public R<Map> selectUserById(@PathVariable Long id) {
+        return roleService.selectUserById(id);
+    }
+
+    @PutMapping("/user")
+    public  R  updateUserById(@RequestBody SysUser sysUser) {
+        return roleService.updateUserById(sysUser);
+    }
+
 }

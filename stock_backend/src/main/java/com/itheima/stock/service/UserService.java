@@ -1,10 +1,7 @@
 package com.itheima.stock.service;
 
 import com.itheima.stock.pojo.UserPage;
-import com.itheima.stock.vo.req.LoginReqVo;
-import com.itheima.stock.vo.req.PageResult;
-import com.itheima.stock.vo.req.UserAddReqVo;
-import com.itheima.stock.vo.req.UserReqVo;
+import com.itheima.stock.vo.req.*;
 import com.itheima.stock.vo.resp.LoginRespVo;
 import com.itheima.stock.vo.resp.R;
 
@@ -40,4 +37,11 @@ public interface UserService {
      * @return
      */
     R<String> addUser(UserAddReqVo userAddReqVo);
+
+    /**
+     * 分页查询角色信息
+     * @param rolePageReqVo
+     * @return
+     */
+    R<PageResult> selectUser(RolePageReqVo rolePageReqVo);
 }

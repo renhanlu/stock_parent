@@ -1,5 +1,6 @@
 package com.itheima.stock.mapper;
 
+import com.itheima.stock.common.domain.SysRoleDomain;
 import com.itheima.stock.pojo.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -40,4 +41,21 @@ public interface SysRoleMapper {
      * @return
      */
     List<Map> getRoleIds();
+
+    /**
+     * 批量删除用户
+     * @param userIds
+     * @return
+     */
+    int deleteUserById(@Param("userIds") List<Long> userIds);
+
+
+
+    /**
+     * 查询当前角色信息
+     * @return
+     */
+    List<SysRoleDomain> selectUser();
+
+    List<SysRole> selectAll();
 }

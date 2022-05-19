@@ -113,14 +113,13 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<Map> getStockCount() {
-
         Date opentime = DateTimeUtil.getOpenDate(DateTime.now()).minusMinutes(1).toDate();
         Date closetime = DateTimeUtil.getCloseDate(DateTime.now()).minusMinutes(1).toDate();
         List<Map> upDown = stockRtInfoMapper.getStockCount(opentime, closetime, 1);
         List<Map> onDown = stockRtInfoMapper.getStockCount(opentime, closetime, 0);
         HashMap<Object, Object> map = new HashMap<>();
-        map.put("count", upDown);
-        map.put("time", onDown);
+        map.put("upList", upDown);
+        map.put("downList", onDown);
         return R.ok(map);
     }
 
@@ -161,27 +160,38 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<Map> getStockCompared() {
-//        1. 获取当前时间
-        DateTime tCStockTime = DateTimeUtil.getLastDate4Stock(DateTime.now()).minusMinutes(1);
-//        1.1获取距离当前时间最近的开盘时间
-        DateTime tOpenTime = DateTimeUtil.getOpenDate(tCStockTime).minusMinutes(1);
-        //转换成java date
-        Date tcDate = tCStockTime.toDate();
-        Date toTime = tOpenTime.toDate();
-//        2.1 获取上一个交易时间
-        DateTime preTime = DateTimeUtil.getPreviousTradingDay(tCStockTime).minusMinutes(1);
-//        2.1 获取上一个交易时间的开盘时间
-        DateTime openDate = DateTimeUtil.getOpenDate(preTime).minusMinutes(1);
-        // 转换java date
-        Date date = preTime.toDate();
-        Date toDate = openDate.toDate();
-        List<String> inner = stockInfoConfig.getInner();
-        List<Map> crTime = stockMarketIndexInfoMapper.etStockCompared(tcDate, toTime, inner);
-        List<Map> yesTime = stockMarketIndexInfoMapper.etStockCompared(date, toDate, inner);
-        Map maps = new HashMap<>();
-        maps.put("volList", crTime);
-        maps.put("yesVolList", yesTime);
-        return R.ok(maps);
+        //1.获取T日和T-1日的开始时间和结束时间
+        //1.1 获取最近股票有效交易时间点--T日时间范围
+        DateTime lastDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        DateTime openDateTime = DateTimeUtil.getOpenDate(lastDateTime);
+        //转化成java中Date,这样jdbc默认识别
+        Date startTime4T = openDateTime.toDate();
+        Date endTime4T=lastDateTime.toDate();
+
+        //1.2 获取T-1日的区间范围
+        //获取lastDateTime的上一个股票有效交易日
+        DateTime preLastDateTime = DateTimeUtil.getPreviousTradingDay(lastDateTime);
+        DateTime preOpenDateTime = DateTimeUtil.getOpenDate(preLastDateTime);
+        Date startTime = preOpenDateTime.toDate();
+        Date endTime=preLastDateTime.toDate();
+        List<String> markedIds = stockInfoConfig.getInner();
+        //3.分别查询T日和T-1日的交易量数据，得到两个集合
+        //3.1 查询T日大盘交易统计数据
+        List<Map> data4T=stockMarketIndexInfoMapper.etStockCompared(startTime4T,endTime4T,markedIds);
+        if (CollectionUtils.isEmpty(data4T)) {
+            data4T=new ArrayList<>();
+        }
+        //3.2 查询T-1日大盘交易统计数据
+        List<Map> data4PreT=stockMarketIndexInfoMapper.etStockCompared(startTime,endTime,markedIds);
+        if (CollectionUtils.isEmpty(data4PreT)) {
+            data4PreT=new ArrayList<>();
+        }
+        //4.组装响应数据
+        HashMap<String, List> info = new HashMap<>();
+        info.put("volList",data4T);
+        info.put("yesVolList",data4PreT);
+        //5.返回数据
+        return R.ok(info);
     }
 
     /**
@@ -281,7 +291,7 @@ public class StockServiceImpl implements StockService {
      */
     @Override
     public R<List<StockSearchDomain>> selectStockByLike(String searchStr) {
-        List<StockSearchDomain> stockSearchDomains = stockRtInfoMapper.selectStockByLike(searchStr);
+        List<StockSearchDomain> stockSearchDomains = stockBusinessMapper.selectStockByLike(searchStr);
         return R.ok(stockSearchDomains);
     }
 

@@ -168,17 +168,7 @@
         order by sri2.cur_time;
 
     </select>
-    <select id="selectStockByLike" resultType="com.itheima.stock.common.domain.StockSearchDomain">
 
-        SELECT
-            sri.stock_code as code,
-            sri.stock_name as name
-        FROM
-            stock_rt_info AS sri
-        WHERE
-            sri.stock_code LIKE  concat('%',#{searchStr},'%')
-        limit 20
-    </select>
 <!--    个股周K线-->
     <select id="getIndividualStocksByWeek" resultType="java.util.Map">
         SELECT

@@ -45,6 +45,16 @@
             sec_code
         from stock_business
     </select>
+    <select id="selectStockByLike" resultType="com.itheima.stock.common.domain.StockSearchDomain">
+        SELECT
+            sb.sec_code as code,
+            sb.sec_name as name
+        FROM
+            stock_business AS sb
+        WHERE
+            sb.sec_code LIKE  concat('%',#{searchStr},'%')
+
+    </select>
 
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

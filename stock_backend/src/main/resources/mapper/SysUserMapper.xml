@@ -55,6 +55,7 @@
         su.email,
         su.`status`,
         su.deleted,
+        su.sex,
         su.create_id as createId,
         su.create_where as createWhere,
         su.create_time as createTime,
@@ -78,19 +79,16 @@
             </if>
         </where>
     </select>
-    <select id="selectAllUser" resultType="com.itheima.stock.pojo.SysPermission">
-        SELECT
-            su.id,
-            su.username,
-            su.phone,
-            su.nick_name AS nickName,
-            su.real_name AS realName,
-            su.sex,
-            su.`status`,
-            su.email
-        FROM
-            sys_user su  WHERE su.id=#{uid}
+
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select
+            id,username,
+            phone,real_name,nick_name,
+            email,status,sex
+        from sys_user
+        where  id = #{id,jdbcType=VARCHAR}
     </select>
+
 
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -216,4 +214,5 @@
             update_time =  #{updateTime,jdbcType=TIMESTAMP}
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
+
 </mapper>

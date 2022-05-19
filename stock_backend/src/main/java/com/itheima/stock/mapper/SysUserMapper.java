@@ -1,12 +1,12 @@
 package com.itheima.stock.mapper;
 
-import com.itheima.stock.pojo.SysPermission;
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.pojo.UserPage;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author Renhanlu
@@ -31,7 +31,7 @@ public interface SysUserMapper {
 
     SysUser getPasswordByname(@Param("userName") String username);
 
-    List<SysPermission> selectAllUser(@Param("uid") String id);
+
 
 
     /**
@@ -40,4 +40,8 @@ public interface SysUserMapper {
      */
     List<UserPage> selectByPageAllUser(@Param("userName") String userName, @Param("nickName") String nickName,
                                        @Param("startTime") String startTime, @Param("endTime") String endTime);
+
+    Map selectByUserId(@Param("id") Long id);
+
+
 }

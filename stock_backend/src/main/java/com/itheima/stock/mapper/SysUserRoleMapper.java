@@ -2,6 +2,9 @@ package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysUserRole;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Renhanlu
@@ -24,4 +27,9 @@ public interface SysUserRoleMapper {
 
     int updateByPrimaryKey(SysUserRole record);
 
+    List<String> selectUserRole(@Param("userId") String userId);
+
+    void deleteByUserId(@Param("userId") String userId);
+
+    int insertBatch(@Param("list") List<SysUserRole> list);
 }

@@ -2,10 +2,7 @@ package com.itheima.stock.controller;
 
 import com.itheima.stock.pojo.UserPage;
 import com.itheima.stock.service.UserService;
-import com.itheima.stock.vo.req.LoginReqVo;
-import com.itheima.stock.vo.req.PageResult;
-import com.itheima.stock.vo.req.UserAddReqVo;
-import com.itheima.stock.vo.req.UserReqVo;
+import com.itheima.stock.vo.req.*;
 import com.itheima.stock.vo.resp.LoginRespVo;
 import com.itheima.stock.vo.resp.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +48,16 @@ public class UserController {
     @PostMapping("/user")
     public R AddUser(@RequestBody UserAddReqVo userAddReqVo) {
         return userService.addUser(userAddReqVo);
+    }
+
+    /**
+     * 分页查询当前角色信息
+     * @param rolePageReqVo
+     * @return
+     */
+    @PostMapping("/roles")
+    public R<PageResult> selectUser(@RequestBody RolePageReqVo rolePageReqVo) {
+        return userService.selectUser(rolePageReqVo);
     }
 
 }

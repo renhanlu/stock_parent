@@ -78,12 +78,7 @@ public interface StockRtInfoMapper {
                                         @Param("date") Date date,
                                         @Param("code") String code);
 
-    /**
-     * 模糊查询股票
-     * @param searchStr 股票代码
-     * @return
-     */
-    List<StockSearchDomain> selectStockByLike(@Param("searchStr") String searchStr);
+
 
 
     /**

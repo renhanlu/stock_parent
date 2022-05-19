@@ -1,7 +1,11 @@
 package com.itheima.stock.service;
 
+import com.itheima.stock.pojo.SysUser;
+import com.itheima.stock.vo.req.UpdateMsgReqVo;
 import com.itheima.stock.vo.resp.R;
+import com.itheima.stock.vo.resp.UserRoleRespVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,5 +14,18 @@ import java.util.Map;
  * @Version 1.0
  */
 public interface RoleService {
-    R<Map> getRoleMsg(String userId);
+    R<UserRoleRespVo> getRoleMsg(String userId);
+
+    R deleteByIds(List<Long> userIds);
+
+    R<Map> selectUserById(Long id);
+
+    /**
+     * 根据id更新用户基本信息
+     * @param sysUser
+     * @return
+     */
+    R updateUserById(SysUser sysUser);
+
+    R updateMsg(UpdateMsgReqVo updateMsgReqVo);
 }

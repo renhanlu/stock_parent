@@ -41,11 +41,38 @@
     <select id="getRoleIds" resultType="java.util.Map">
         SELECT sr.id from sys_role sr
     </select>
+    <select id="selectUser" resultType="com.itheima.stock.common.domain.SysRoleDomain">
+        SELECT
+            sr.id,
+            sr.`name`,
+            sr.description,
+            sr.`status`,
+            sr.create_time as createTime,
+            sr.update_time as updateTime,
+            sr.deleted
+        FROM
+            sys_role sr
+    </select>
+    <select id="selectAll" resultType="com.itheima.stock.pojo.SysRole">
+        select
+        <include refid="Base_Column_List"/>
+        from sys_role where deleted=1
+    </select>
 
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_role
         where  id = #{id,jdbcType=VARCHAR} 
+    </delete>
+    <delete id="deleteUserById">
+        DELETE
+        from
+            sys_user
+        WHERE
+        sys_user.id IN <foreach collection="userIds" separator="," item="userId" open="(" close=")">
+           #{userId}
+    </foreach>
+
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.itheima.stock.pojo.SysRole" useGeneratedKeys="true">
         insert into sys_role

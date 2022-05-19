@@ -22,10 +22,16 @@
         from sys_user_role
         where  id = #{id,jdbcType=VARCHAR} 
     </select>
+    <select id="selectUserRole" resultType="java.lang.String">
+        SELECT ur.role_id FROM sys_user_role AS ur WHERE ur.user_id=#{userId}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_user_role
         where  id = #{id,jdbcType=VARCHAR} 
+    </delete>
+    <delete id="deleteByUserId">
+        DELETE FROM sys_user_role WHERE user_id=#{userId}
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.itheima.stock.pojo.SysUserRole" useGeneratedKeys="true">
         insert into sys_user_role
@@ -48,6 +54,14 @@
                 <if test="roleId != null">#{roleId,jdbcType=VARCHAR},</if>
                 <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
+    </insert>
+    <insert id="insertBatch">
+        insert into sys_user_role
+        ( id,user_id,role_id,create_time) values
+        <foreach collection="list" item="lis" separator=",">
+            (#{lis.id,jdbcType=BIGINT},#{lis.userId,jdbcType=BIGINT},#{lis.roleId,jdbcType=BIGINT}
+            ,#{lis.createTime,jdbcType=TIMESTAMP})
+        </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.SysUserRole">
         update sys_user_role

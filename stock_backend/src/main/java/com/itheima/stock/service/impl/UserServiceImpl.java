@@ -3,6 +3,8 @@ package com.itheima.stock.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.base.Strings;
+import com.itheima.stock.common.domain.SysRoleDomain;
+import com.itheima.stock.mapper.SysRoleMapper;
 import com.itheima.stock.mapper.SysUserMapper;
 import com.itheima.stock.pojo.SysPermission;
 import com.itheima.stock.pojo.SysUser;
@@ -10,10 +12,7 @@ import com.itheima.stock.pojo.UserPage;
 import com.itheima.stock.service.PermissionService;
 import com.itheima.stock.service.UserService;
 import com.itheima.stock.utils.IdWorker;
-import com.itheima.stock.vo.req.LoginReqVo;
-import com.itheima.stock.vo.req.PageResult;
-import com.itheima.stock.vo.req.UserAddReqVo;
-import com.itheima.stock.vo.req.UserReqVo;
+import com.itheima.stock.vo.req.*;
 import com.itheima.stock.vo.resp.LoginRespVo;
 import com.itheima.stock.vo.resp.PermissionRespNodeVo;
 import com.itheima.stock.vo.resp.R;
@@ -25,6 +24,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,17 +45,18 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private IdWorker idWorker;
 
-
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private SysRoleMapper sysRoleMapper;
 
 
     @Override
     public R<LoginRespVo> login(LoginReqVo vo) {
 //          1.判断传入的参数的合法性
         if (vo == null || Strings.isNullOrEmpty(vo.getUsername()) || Strings.isNullOrEmpty(vo.getPassword())
-        || Strings.isNullOrEmpty(vo.getRkey())) {
+                || Strings.isNullOrEmpty(vo.getRkey())) {
             //请求参数异常
             return R.error(ResponseCode.DATA_ERROR.getMessage());
         }
@@ -97,26 +98,39 @@ public class UserServiceImpl implements UserService {
 //        存redis中
         redisTemplate.opsForValue().set(id, code, 60, TimeUnit.SECONDS);
         Map<String, String> map = new HashMap<>();
-        map.put("rkey",id);
-        map.put("code",code);
+        map.put("rkey", id);
+        map.put("code", code);
         return R.ok(map);
     }
 
+    /**
+     * 分页查看用户信息并搜索
+     *
+     * @param userReqVo
+     * @return
+     */
     @Override
     public R<PageResult<UserPage>> selectByUser(UserReqVo userReqVo) {
         PageHelper.startPage(userReqVo.getPageNum(), userReqVo.getPageSize());
-        List<UserPage> users = sysUserMapper.selectByPageAllUser(userReqVo.getUsername(),userReqVo.getNickname(),
-                userReqVo.getStartTime(),userReqVo.getEndTime());
+        List<UserPage> users = sysUserMapper.selectByPageAllUser(userReqVo.getUsername(), userReqVo.getNickname(),
+                userReqVo.getStartTime(), userReqVo.getEndTime());
         PageInfo<UserPage> PageInfo = new PageInfo<>(users);
         PageResult<UserPage> PageResult = new PageResult<>(PageInfo);
         return R.ok(PageResult);
     }
 
+    /**
+     * 添加用户
+     *
+     * @param userAddReqVo
+     * @return
+     */
+
     @Override
     public R<String> addUser(UserAddReqVo userAddReqVo) {
         SysUser user = new SysUser();
-        BeanUtils.copyProperties(userAddReqVo,user);
-        user.setId(idWorker.nextId()+"");
+        BeanUtils.copyProperties(userAddReqVo, user);
+        user.setId(idWorker.nextId() + "");
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setPhone(user.getPhone());
         user.setEmail(user.getEmail());
@@ -125,11 +139,22 @@ public class UserServiceImpl implements UserService {
         user.setSex(user.getSex());
         user.setCreateWhere(user.getCreateWhere());
         user.setStatus(user.getStatus());
+        user.setCreateTime(new Date());
+        user.setUpdateTime(new Date());
         int count = sysUserMapper.insert(user);
         if (count == 0) {
-            return R.error();
+            return R.error(ResponseCode.ERROR.getMessage());
         }
-        return R.ok();
+        return R.ok(ResponseCode.SUCCESS.getMessage());
+    }
+
+    @Override
+    public R<PageResult> selectUser(RolePageReqVo rolePageReqVo) {
+        PageHelper.startPage(rolePageReqVo.getPageNum(), rolePageReqVo.getPageSize());
+        List<SysRoleDomain> roles = sysRoleMapper.selectUser();
+        PageInfo<SysRoleDomain> PageInfo = new PageInfo<>(roles);
+        PageResult<SysRoleDomain> PageResult = new PageResult<>(PageInfo);
+        return R.ok(PageResult);
     }
 
 

@@ -1,6 +1,7 @@
 package com.itheima.stock.mapper;
 
 import com.itheima.stock.common.domain.StockBusinessDomain;
+import com.itheima.stock.common.domain.StockSearchDomain;
 import com.itheima.stock.pojo.StockBusiness;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -44,4 +45,11 @@ public interface StockBusinessMapper {
      * @return
      */
     List<String> getStockIds();
+
+    /**
+     * 模糊查询股票
+     * @param searchStr 股票代码
+     * @return
+     */
+    List<StockSearchDomain> selectStockByLike(@Param("searchStr") String searchStr);
 }
