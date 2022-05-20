@@ -28,4 +28,7 @@ public interface SysPermissionMapper {
     int updateByPrimaryKey(SysPermission record);
 
     List<SysPermission> getPermissionByUserId(@Param("userId") String userId);
+
+//    获取所有的权限
+    List<SysPermission> getPermissionAll();
 }

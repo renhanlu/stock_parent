@@ -9,6 +9,7 @@ import com.itheima.stock.pojo.SysUserRole;
 import com.itheima.stock.service.RoleService;
 import com.itheima.stock.utils.IdWorker;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
+import com.itheima.stock.vo.req.UserRoleReqVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.ResponseCode;
 import com.itheima.stock.vo.resp.UserRoleRespVo;
@@ -38,6 +39,7 @@ public class RoleServiceImpl implements RoleService {
     private SysUserRoleMapper sysUserRoleMapper;
     @Autowired
     private IdWorker idWorker;
+
     /**
      * 获取用户具有的角色信息，以及所有的角色信息
      *
@@ -88,13 +90,14 @@ public class RoleServiceImpl implements RoleService {
 
     /**
      * 根据id更新用户基本信息
+     *
      * @param sysUser
      * @return
      */
     @Override
     public R updateUserById(SysUser sysUser) {
         int count = sysUserMapper.updateByPrimaryKeySelective(sysUser);
-        if (count==0) {
+        if (count == 0) {
             return R.error();
         }
         return R.ok();
@@ -103,7 +106,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public R updateMsg(UpdateMsgReqVo updateMsgReqVo) {
         //1.判断用户id是否存在
-        if (updateMsgReqVo.getUserId()==null) {
+        if (updateMsgReqVo.getUserId() == null) {
             return R.error(ResponseCode.ERROR.getMessage());
         }
         //2.删除用户原来所拥有的角色id
@@ -112,19 +115,32 @@ public class RoleServiceImpl implements RoleService {
         if (CollectionUtils.isEmpty(updateMsgReqVo.getRoleIds())) {
             return R.ok(ResponseCode.SUCCESS.getMessage());
         }
-        //封装用户角色对象集合
-
         List<SysUserRole> list = updateMsgReqVo.getRoleIds().stream().map(roleId -> {
             SysUserRole userRole = SysUserRole.builder().
                     userId(updateMsgReqVo.getUserId()).roleId(roleId).
-                    createTime(new Date()).id(idWorker.nextId()+"").build();
+                    createTime(new Date()).id(idWorker.nextId() + "").build();
             return userRole;
         }).collect(Collectors.toList());
         //批量插入
-        int count= this.sysUserRoleMapper.insertBatch(list);
-        if (count==0) {
+        int count = this.sysUserRoleMapper.insertBatch(list);
+        if (count == 0) {
             return R.error(ResponseCode.ERROR.getMessage());
         }
+        return R.ok(ResponseCode.SUCCESS.getMessage());
+    }
+
+    /**
+     * 添加角色和角色关联权限
+     *
+     * @param userRoleReqVo
+     * @return
+     */
+    @Override
+    public R addUserRole(UserRoleReqVo userRoleReqVo) {
+        // TODO: 2022/5/21 这里有错误 
+        UserRoleReqVo vo = UserRoleReqVo.builder().name(userRoleReqVo.getName()).description(userRoleReqVo.getDescription())
+                .permissionIds(userRoleReqVo.getPermissionIds()).build();
+        int count = sysUserMapper.addUserRole(vo);
         return R.ok(ResponseCode.SUCCESS.getMessage());
     }
 

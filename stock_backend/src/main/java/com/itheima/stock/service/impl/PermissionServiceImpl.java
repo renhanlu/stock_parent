@@ -46,8 +46,13 @@ public class PermissionServiceImpl implements PermissionService {
         }
         return list;
     }
-  
-      /**
+
+    @Override
+    public List<SysPermission> getPermissionAll() {
+        return sysPermissionMapper.getPermissionAll();
+    }
+
+    /**
      * 根据用户id查询权限集合
      * @param userId
      * @return
@@ -56,5 +61,5 @@ public class PermissionServiceImpl implements PermissionService {
     public List<SysPermission> getPermissionByUserId(String userId) {
         return sysPermissionMapper.getPermissionByUserId(userId);
     }
-  //......
+
 }  

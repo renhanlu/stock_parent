@@ -2,6 +2,7 @@ package com.itheima.stock.service;
 
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
+import com.itheima.stock.vo.req.UserRoleReqVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.UserRoleRespVo;
 
@@ -28,4 +29,11 @@ public interface RoleService {
     R updateUserById(SysUser sysUser);
 
     R updateMsg(UpdateMsgReqVo updateMsgReqVo);
+
+    /**
+     * 添加角色和角色关联权限
+     * @param userRoleReqVo
+     * @return
+     */
+    R addUserRole(UserRoleReqVo userRoleReqVo);
 }

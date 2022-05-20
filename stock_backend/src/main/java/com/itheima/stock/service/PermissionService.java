@@ -17,4 +17,6 @@ public interface PermissionService {
 
     List<PermissionRespNodeVo> getTree(List<SysPermission> permissions, String pid, boolean isOnlyMenuType);
 
+    List<SysPermission> getPermissionAll();
+
 } 
