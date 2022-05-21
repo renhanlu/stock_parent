@@ -1,9 +1,11 @@
 package com.itheima.stock.service.impl;
 
 import com.itheima.stock.mapper.SysRoleMapper;
+import com.itheima.stock.mapper.SysRolePermissionMapper;
 import com.itheima.stock.mapper.SysUserMapper;
 import com.itheima.stock.mapper.SysUserRoleMapper;
 import com.itheima.stock.pojo.SysRole;
+import com.itheima.stock.pojo.SysRolePermission;
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.pojo.SysUserRole;
 import com.itheima.stock.service.RoleService;
@@ -39,6 +41,9 @@ public class RoleServiceImpl implements RoleService {
     private SysUserRoleMapper sysUserRoleMapper;
     @Autowired
     private IdWorker idWorker;
+    @Autowired
+    private SysRolePermissionMapper sysRolePermissionMapper;
+
 
     /**
      * 获取用户具有的角色信息，以及所有的角色信息
@@ -137,11 +142,36 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public R addUserRole(UserRoleReqVo userRoleReqVo) {
-        // TODO: 2022/5/21 这里有错误 
-        UserRoleReqVo vo = UserRoleReqVo.builder().name(userRoleReqVo.getName()).description(userRoleReqVo.getDescription())
-                .permissionIds(userRoleReqVo.getPermissionIds()).build();
-        int count = sysUserMapper.addUserRole(vo);
+        Long roleId=idWorker.nextId();
+        SysRole role = SysRole.builder().id(roleId+"")
+                .deleted(1).name(userRoleReqVo.getName()).description(userRoleReqVo.getDescription())
+                .createTime(new Date()).updateTime(new Date()).status(1).build();
+        //添加角色
+        int addRoleCount = sysRoleMapper.insert(role);
+        if (addRoleCount !=1) {
+            R.error(ResponseCode.ERROR.getMessage());
+        }
+        //2.批量添加角色关联权限集合
+        List<String> permissionsIds = userRoleReqVo.getPermissionsIds();
+        if (!CollectionUtils.isEmpty(permissionsIds)) {
+            List<SysRolePermission> rps = permissionsIds.stream().map(permissionId -> {
+                SysRolePermission rp = SysRolePermission.builder().id(idWorker.nextId()+"").roleId(roleId+"")
+                        .permissionId(permissionId).createTime(new Date()).build();
+                return rp;
+            }).collect(Collectors.toList());
+            //批量插入角色权限集合
+            int counts=this.sysRolePermissionMapper.addRole(rps);
+            if (counts==0) {
+                R.error(ResponseCode.ERROR.getMessage());
+            }
+        }
         return R.ok(ResponseCode.SUCCESS.getMessage());
+    }
+
+    @Override
+    public R<List<String>> selectPermissionById(String roleId) {
+        List<String> roleIds = sysRolePermissionMapper.selectPermissionById(roleId);
+        return R.ok(roleIds);
     }
 
 }

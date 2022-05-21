@@ -19,7 +19,8 @@ import java.util.List;
 public class UserRoleReqVo {
     private String name;
 
+
     private String description;
 
-    private List<Integer> permissionIds;
+    private List<String> permissionsIds;
 }

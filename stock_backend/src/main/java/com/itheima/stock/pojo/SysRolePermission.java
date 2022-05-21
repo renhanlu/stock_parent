@@ -1,14 +1,17 @@
 package com.itheima.stock.pojo;
 
+import lombok.Builder;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 角色权限表
  * @TableName sys_role_permission
  */
 @Data
+@Builder
 public class SysRolePermission implements Serializable {
     /**
      * 主键

@@ -147,13 +147,7 @@
                 <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
-    <insert id="addUserRole">
-        INSERT INTO sys_role ( id, `name`, description )
-        VALUES <foreach collection="userRoleReqVo" item="user"  separator=",">
-        (#{user.id},#{user.name},#{user.description}
-    </foreach>
 
-    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.SysUser">
         update sys_user
         <set>

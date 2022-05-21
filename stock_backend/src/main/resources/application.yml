@@ -3,6 +3,10 @@ server:
   port: 8081
 
 spring:
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
   # 配置mysql数据源
   datasource:
     druid:

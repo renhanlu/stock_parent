@@ -36,4 +36,11 @@ public interface RoleService {
      * @return
      */
     R addUserRole(UserRoleReqVo userRoleReqVo);
+
+    /**
+     * 根据角色id查找权限id
+     * @param roleId
+     * @return
+     */
+    R<List<String>> selectPermissionById(String roleId);
 }

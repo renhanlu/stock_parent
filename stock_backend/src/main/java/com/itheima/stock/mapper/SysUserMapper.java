@@ -2,7 +2,6 @@ package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.pojo.UserPage;
-import com.itheima.stock.vo.req.UserRoleReqVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -44,6 +43,5 @@ public interface SysUserMapper {
 
     Map selectByUserId(@Param("id") Long id);
 
-    // TODO: 2022/5/21 这里错了 明天再改 
-    int addUserRole(@Param("userRoleReqVo") UserRoleReqVo userRoleReqVo);
+
 }

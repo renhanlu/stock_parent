@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * @Author Renhanlu
- * @Date 2022/5/18 15:54
+ * @Date 2022/5/21 22:54
  * @Version 1.0
  */
 @RestController
@@ -68,6 +68,16 @@ public class UserRoleController {
     @PostMapping("/role")
     public R addUserRole(@RequestBody UserRoleReqVo userRoleReqVo) {
         return roleService.addUserRole(userRoleReqVo);
+    }
+
+    /**
+     * 根据角色id查找权限id
+     * @return
+     */
+    @GetMapping("/role/{roleId}")
+    public R<List<String>> selectPermissionById(String roleId) {
+        return roleService.selectPermissionById(roleId);
+
     }
 
 }

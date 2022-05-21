@@ -1,6 +1,7 @@
 package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysPermission;
+import com.itheima.stock.pojo.SysRolePermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +32,6 @@ public interface SysPermissionMapper {
 
 //    获取所有的权限
     List<SysPermission> getPermissionAll();
+
+
 }

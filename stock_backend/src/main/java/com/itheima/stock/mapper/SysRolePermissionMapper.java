@@ -2,6 +2,9 @@ package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysRolePermission;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author Renhanlu
@@ -24,4 +27,7 @@ public interface SysRolePermissionMapper {
 
     int updateByPrimaryKey(SysRolePermission record);
 
+    int addRole(@Param("roles") List<SysRolePermission> roles);
+
+    List<String> selectPermissionById(@Param("roleId") String roleId);
 }
