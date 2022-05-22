@@ -11,6 +11,7 @@ import com.itheima.stock.pojo.SysUserRole;
 import com.itheima.stock.service.RoleService;
 import com.itheima.stock.utils.IdWorker;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
+import com.itheima.stock.vo.req.UpdateRoleReqVo;
 import com.itheima.stock.vo.req.UserRoleReqVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.ResponseCode;
@@ -142,26 +143,26 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public R addUserRole(UserRoleReqVo userRoleReqVo) {
-        Long roleId=idWorker.nextId();
-        SysRole role = SysRole.builder().id(roleId+"")
+        Long roleId = idWorker.nextId();
+        SysRole role = SysRole.builder().id(roleId + "")
                 .deleted(1).name(userRoleReqVo.getName()).description(userRoleReqVo.getDescription())
                 .createTime(new Date()).updateTime(new Date()).status(1).build();
         //添加角色
         int addRoleCount = sysRoleMapper.insert(role);
-        if (addRoleCount !=1) {
+        if (addRoleCount != 1) {
             R.error(ResponseCode.ERROR.getMessage());
         }
         //2.批量添加角色关联权限集合
         List<String> permissionsIds = userRoleReqVo.getPermissionsIds();
         if (!CollectionUtils.isEmpty(permissionsIds)) {
             List<SysRolePermission> rps = permissionsIds.stream().map(permissionId -> {
-                SysRolePermission rp = SysRolePermission.builder().id(idWorker.nextId()+"").roleId(roleId+"")
+                SysRolePermission rp = SysRolePermission.builder().id(idWorker.nextId() + "").roleId(roleId + "")
                         .permissionId(permissionId).createTime(new Date()).build();
                 return rp;
             }).collect(Collectors.toList());
             //批量插入角色权限集合
-            int counts=this.sysRolePermissionMapper.addRole(rps);
-            if (counts==0) {
+            int counts = this.sysRolePermissionMapper.addRole(rps);
+            if (counts == 0) {
                 R.error(ResponseCode.ERROR.getMessage());
             }
         }
@@ -172,6 +173,67 @@ public class RoleServiceImpl implements RoleService {
     public R<List<String>> selectPermissionById(String roleId) {
         List<String> roleIds = sysRolePermissionMapper.selectPermissionById(roleId);
         return R.ok(roleIds);
+    }
+
+    /**
+     * 根据角色id删除角色信息
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public R<String> deleteRoleById(String roleId) {
+        int count = sysRoleMapper.deleteByPrimaryKey(Long.valueOf(roleId));
+        if (count == 0) {
+            return R.error(ResponseCode.ERROR.getMessage());
+        }
+        return R.ok(ResponseCode.SUCCESS.getMessage());
+    }
+
+    /**
+     * 更新角色和角色关联权限
+     *
+     * @param updateRoleReqVo
+     * @return
+     */
+    @Override
+    public R<String> updateRole(UpdateRoleReqVo updateRoleReqVo) {
+
+        SysRole sysRole = SysRole.builder().updateTime(new Date()).deleted(1)
+                .description(updateRoleReqVo.getDescription()).name(updateRoleReqVo.getName())
+                .build();
+        sysRoleMapper.updateByPrimaryKeySelective(sysRole);
+        List<String> permissionsIds = updateRoleReqVo.getPermissionsIds();
+//        先删除，后添加
+        sysRolePermissionMapper.deleteByRoleId(updateRoleReqVo.getId());
+        if (!CollectionUtils.isEmpty(permissionsIds)) {
+            List<SysRolePermission> rps = permissionsIds.stream().map(permissionId -> {
+                SysRolePermission rp = SysRolePermission.builder().id(idWorker.nextId() + "").roleId(updateRoleReqVo.getId())
+                        .permissionId(permissionId).createTime(new Date()).build();
+                return rp;
+            }).collect(Collectors.toList());
+            int count = sysRolePermissionMapper.insertRole(rps);
+
+            if (count == 0) {
+                return R.error(ResponseCode.ERROR.getMessage());
+            }
+        }
+        return R.ok(ResponseCode.SUCCESS.getMessage());
+    }
+
+    /**
+     * 更新用户的状态信息
+     *
+     * @return
+     */
+    @Override
+    public R<String> updateRoleStatus(String roleId, Integer status) {
+        SysRole sysRole = SysRole.builder().updateTime(new Date()).status(status).id(roleId).build();
+        int i = sysRoleMapper.updateByPrimaryKeySelective(sysRole);
+        if (i == 0) {
+            return R.error(ResponseCode.ERROR.getMessage());
+        }
+        return R.ok(ResponseCode.SUCCESS.getMessage());
     }
 
 }

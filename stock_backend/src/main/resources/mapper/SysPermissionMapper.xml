@@ -65,6 +65,10 @@
         delete from sys_permission
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
+    <delete id="deleteByPrimaryById">
+        delete from sys_permission
+        where  id = #{permissionId}
+    </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.itheima.stock.pojo.SysPermission" useGeneratedKeys="true">
         insert into sys_permission
         ( id,code,title

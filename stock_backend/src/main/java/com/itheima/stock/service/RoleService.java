@@ -2,6 +2,7 @@ package com.itheima.stock.service;
 
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
+import com.itheima.stock.vo.req.UpdateRoleReqVo;
 import com.itheima.stock.vo.req.UserRoleReqVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.UserRoleRespVo;
@@ -43,4 +44,25 @@ public interface RoleService {
      * @return
      */
     R<List<String>> selectPermissionById(String roleId);
+
+    /**
+     * 根据角色id删除角色信息
+     * @param roleId
+     * @return
+     */
+    R<String> deleteRoleById(String roleId);
+
+    /**
+     * 更新角色和角色关联权限
+     * @param updateRoleReqVo
+     * @return
+     */
+    R<String> updateRole(UpdateRoleReqVo updateRoleReqVo);
+
+    /**
+     * 更新用户的状态信息
+     * @return
+     */
+    R<String> updateRoleStatus(String roleId, Integer status);
+
 }

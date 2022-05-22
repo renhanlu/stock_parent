@@ -3,6 +3,7 @@ package com.itheima.stock.controller;
 import com.itheima.stock.pojo.SysUser;
 import com.itheima.stock.service.RoleService;
 import com.itheima.stock.vo.req.UpdateMsgReqVo;
+import com.itheima.stock.vo.req.UpdateRoleReqVo;
 import com.itheima.stock.vo.req.UserRoleReqVo;
 import com.itheima.stock.vo.resp.R;
 import com.itheima.stock.vo.resp.UserRoleRespVo;
@@ -75,9 +76,36 @@ public class UserRoleController {
      * @return
      */
     @GetMapping("/role/{roleId}")
-    public R<List<String>> selectPermissionById(String roleId) {
+    public R<List<String>> selectPermissionById(@PathVariable String roleId) {
         return roleService.selectPermissionById(roleId);
-
     }
 
+    /**
+     * 根据角色id删除角色信息
+     * @param roleId
+     * @return
+     */
+    @DeleteMapping("/role/{roleId}")
+     public R<String> deleteRoleById(@PathVariable String roleId) {
+        return roleService.deleteRoleById(roleId);
+    }
+
+    /**
+     * 更新角色和角色关联权限
+     * @param updateRoleReqVo
+     * @return
+     */
+    @PutMapping("/role")
+    public R<String> updateRole(@RequestBody UpdateRoleReqVo updateRoleReqVo) {
+        return roleService.updateRole(updateRoleReqVo);
+    }
+
+    /**
+     * 更新用户的状态信息
+     * @return
+     */
+    @PostMapping("/role/{roleId}/{status}")
+    public R<String> updateRoleStatus(@PathVariable String roleId,@PathVariable Integer status) {
+        return roleService.updateRoleStatus(roleId,status);
+    }
 }

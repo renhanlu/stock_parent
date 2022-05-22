@@ -30,4 +30,8 @@ public interface SysRolePermissionMapper {
     int addRole(@Param("roles") List<SysRolePermission> roles);
 
     List<String> selectPermissionById(@Param("roleId") String roleId);
+
+    int deleteByRoleId(@Param("id") String id);
+
+    int insertRole(@Param("roleids") List<SysRolePermission> roleids);
 }

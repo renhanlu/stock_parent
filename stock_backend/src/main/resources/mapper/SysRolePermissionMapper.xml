@@ -35,6 +35,9 @@
         delete from sys_role_permission
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
+    <delete id="deleteByRoleId">
+        delete from sys_role_permission where role_id=#{id}
+    </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.itheima.stock.pojo.SysRolePermission" useGeneratedKeys="true">
         insert into sys_role_permission
         ( id,role_id,permission_id
@@ -63,6 +66,14 @@
         values
         <foreach collection="roles" item="role" separator=",">
             (#{role.id},#{role.roleId},#{role.permissionId},#{role.createTime})
+        </foreach>
+    </insert>
+    <insert id="insertRole">
+        insert into sys_role_permission
+        (id,role_id,permission_id,create_time)
+        values
+        <foreach collection="roleids" item="roles" separator=",">
+            (#{roles.id},#{roles.roleId},#{roles.permissionId},#{roles.createTime})
         </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.itheima.stock.pojo.SysRolePermission">

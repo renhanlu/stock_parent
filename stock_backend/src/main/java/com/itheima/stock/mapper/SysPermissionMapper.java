@@ -1,7 +1,6 @@
 package com.itheima.stock.mapper;
 
 import com.itheima.stock.pojo.SysPermission;
-import com.itheima.stock.pojo.SysRolePermission;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -34,4 +33,5 @@ public interface SysPermissionMapper {
     List<SysPermission> getPermissionAll();
 
 
+    int deleteByPrimaryById(@Param("permissionId") String permissionId);
 }
