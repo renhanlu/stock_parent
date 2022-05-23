@@ -52,4 +52,9 @@ public class LoginRespVo {
      */
     private List<String> permissions;
 
+    /**
+     * 响应前端的token字符串
+     */
+    private String  accessToken;
+
 }

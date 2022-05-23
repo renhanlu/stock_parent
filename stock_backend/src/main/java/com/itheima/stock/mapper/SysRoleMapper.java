@@ -58,4 +58,11 @@ public interface SysRoleMapper {
     List<SysRoleDomain> selectUser();
 
     List<SysRole> selectAll();
+
+    /**
+     * 根据用户id查询角色信息
+     * @param userId
+     * @return
+     */
+    List<SysRole> getRoleByUserId(@Param("userId") String userId);
 }

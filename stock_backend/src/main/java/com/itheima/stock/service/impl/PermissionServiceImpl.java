@@ -128,14 +128,15 @@ public class PermissionServiceImpl implements PermissionService {
         permission.setId(idWorker.nextId() + "");
         //插入数据库
         int count = this.sysPermissionMapper.insert(permission);
-//        SysPermission sysPermission = SysPermission.builder().id(idWorker.nextId()+"").type(vo.getType()).title(vo.getTitle())
-//                .pid(vo.getPid()).url(vo.getUrl()).name(vo.getName())
-//                .icon(vo.getIcon()).perms(vo.getPerms()).method(vo.getMethod())
-//                .code(vo.getCode()).orderNum(vo.getOrderNum()).build();
-//        int count= sysPermissionMapper.insertSelective(sysPermission);
-//        if (count==0) {
-//            return R.error(ResponseCode.ERROR.getMessage());
-//        }
+/*        SysPermission sysPermission = SysPermission.builder().id(idWorker.nextId()+"").type(vo.getType()).title(vo.getTitle())
+                .pid(vo.getPid()).url(vo.getUrl()).name(vo.getName())
+                .icon(vo.getIcon()).perms(vo.getPerms()).method(vo.getMethod())
+                .code(vo.getCode()).orderNum(vo.getOrderNum()).build();
+        int count= sysPermissionMapper.insertSelective(sysPermission);
+        if (count==0) {
+            return R.error(ResponseCode.ERROR.getMessage());
+        }
+        */
         return R.ok(ResponseCode.SUCCESS.getMessage());
     }
 
